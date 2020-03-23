@@ -82,3 +82,11 @@ input::-webkit-inner-spin-button {
 .highlight {
   background: #ffd5bd;
 }
+.deleted {
+  background: rgb(126, 126, 126);
+  pointer-events: none;
+  cursor: not-allowed;
+}
+.added {
+  text-decoration: underline;
+}
