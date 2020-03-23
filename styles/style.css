@@ -1,0 +1,84 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Montserrat', sans-serif;
+}
+
+table, th, td {
+  border: 1px solid #000;
+}
+
+.upper {
+  height: 100px;
+  text-align: right;
+  padding-top: 2vh;
+  padding-right: 10vw;
+  box-sizing: border-box;
+}
+.btn {
+  margin: 0 10px;
+  min-width: 80px;
+  min-height: 30px;
+  background: transparent;
+  border: 1px solid #979797;
+  border-radius: 20px;
+  height: 40px;
+  width: 150px;
+  box-shadow: 3px 3px 9px 0px rgba(163,160,163,1);
+}
+#btn__add {
+  background-color: #b5b9f0;
+}
+#btn__del {
+  background-color: #f0b5b5;
+}
+#btn__save {
+  background-color: #b5f0c8;
+}
+
+
+.lower {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 8vw;
+}
+
+th, td {
+  padding: 5px;
+  box-sizing: border-box;
+  height: 30px;
+}
+th {
+  font-weight: bold;
+}
+tr:nth-child(even) {
+  /* background-color: #d2d2d2; */
+}
+table {
+  width: 40vw;
+  border-collapse: collapse;
+}
+
+#form {
+  width: 35vw;
+}
+.label {
+  width: 100px;
+  font-weight: bold;
+}
+#form input {
+  width: 75%;
+  height: 35px;
+  margin: 8px auto 20px;
+  padding: 0 8px;
+  box-sizing: border-box;
+}
+/* hide input number arrows */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.highlight {
+  background: #ffd5bd;
+}
