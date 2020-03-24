@@ -84,8 +84,8 @@ input::-webkit-inner-spin-button {
 }
 .deleted {
   background: rgb(126, 126, 126);
+  cursor: not-allowed !important;
   pointer-events: none;
-  cursor: not-allowed;
 }
 .added {
   text-decoration: underline;

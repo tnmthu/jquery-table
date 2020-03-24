@@ -11,6 +11,7 @@
     src="https://code.jquery.com/jquery-3.4.1.js"
     integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
     crossorigin="anonymous"></script>
+  <script src="./js/plugin.js"></script>
   <script src="./js/crud.js"></script>
 </head>
 <body>
@@ -23,7 +24,7 @@
     </div>
 
     <div class="lower">
-      <table id="table">
+      <!-- <table id="table">
         <thead>
           <th>
             <input type="checkbox" id="select_all" value="select_all">
@@ -36,7 +37,8 @@
         <tbody>
           
         </tbody>
-      </table>
+      </table> -->
+      <div id="test"></div>
 
       <form id="form">
         <label for="emp_id" class="label">Id:</label><br>
@@ -54,6 +56,12 @@
       </form>
     </div>
   </div>
-
+  <script>
+    $(document).ready(function() {
+      $.fn.getAllEmp2(function(output) {
+        $("#test").table(output);
+      });
+    });
+  </script>
 </body>
 </html>
