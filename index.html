@@ -58,8 +58,40 @@
   </div>
   <script>
     $(document).ready(function() {
-      $.fn.getAllEmp2(function(output) {
-        $("#test").table(output);
+      $.fn.getAllEmp2(function(data) {
+        $("#test").table({
+        data: data,
+        width: "570px",
+        columns: [
+          {
+            colName: "Id",
+            dataName: "id",
+            type: "number",
+            width: "8%",
+          },
+          {
+            colName: "Employee",
+            dataName: "employee_name",
+            type: "string",
+            width: "40%",
+          },
+          {
+            colName: "Age",
+            dataName: "employee_age",
+            type: "number",
+            width: "25%"
+          },
+          {
+            colName: "Salary",
+            dataName: "employee_salary",
+            type: "number",
+            width: "25%"
+          },
+        ],
+        pagination: {
+          limit: 10
+        }
+      });
       });
     });
   </script>
