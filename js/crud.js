@@ -167,7 +167,6 @@ $(document).ready(function(){
     })
   })
 
-  // update emp info
   $('#test').on("click", "tbody input[type='checkbox']", function (e) {
     e.stopPropagation();
     if ($("#test").find($("tbody input:checkbox:checked")).length == 1) { 
@@ -186,6 +185,7 @@ $(document).ready(function(){
     }
   });
 
+  
   $("#btn__edit").on("click", function() {
     $("#test").find($("tbody input:checkbox:checked")).closest("tr").addClass("added");
     $("#test").find($("tbody input:checkbox:checked")).closest("tr").find("td.employee_name").html($("#emp_name").val());
