@@ -60,43 +60,12 @@
       </div>
     `)
 
-    $(this).find(".pagination li:hover").css("cursor", "pointer");
-
-    // sort
-    $(this).find("thead").on("click", "th", function() {
-      const idx = $(this).attr("data-idx");
-      let rows = $(this).closest("table").find("tbody tr");
-      let asc = $(this).attr("data-asc");
-      if (typeof asc === typeof undefined || asc === false) {
-        $(this).attr("data-asc", 1);
-        rows.sort(function(a, b) {
-          var A = $(a).find('td').eq(parseInt(idx) + 1).html();
-          var B = $(b).find('td').eq(parseInt(idx) + 1).html();
-          if (type[idx] === "number") {
-            return A - B;
-          } else if (type[idx] === "string") {
-            if(A < B) {
-              return -1;
-            }
-            if(A > B) {
-              return 1;
-            }
-          }
-          return 0;
-        }).appendTo("tbody");
-      } else {
-        $(rows.get().reverse()).appendTo("tbody");
-      }
-    });
-  
-  
+      
     // pagination
     let lastPage = 1;
     let trnum = 0;
     const maxRows = pagination.limit;
     let totalRows = $("table tbody tr").length;
-    console.log("here", totalRows)
-
 
     var limitPaging = function() {
       if($('.pagination li').length > 7) {
@@ -137,7 +106,6 @@
       }
     }
 
-    // add class active from bootstrap
     $('.pagination [data-page="1"]').addClass('active');
     $('.pagination').on('click', 'li', function(e) {
       e.stopImmediatePropagation();
@@ -156,10 +124,10 @@
         pageNum = ++lastPage;
       }
       lastPage = pageNum;
-      let trIndex = 0;
       $('.pagination li').removeClass('active');
       $(`.pagination [data-page=${lastPage}]`).addClass('active');
       limitPaging();
+      let trIndex = 0;
       $('table tbody tr').each(function() {
         trIndex++;
         if (trIndex > maxRows * pageNum || trIndex <= maxRows * pageNum - maxRows) {
@@ -171,5 +139,47 @@
     });
 
     limitPaging();
+
+    // sort
+    $(this).find("thead").on("click", "th", function() {
+      const idx = $(this).attr("data-idx");
+      let rows = $(this).closest("table").find("tbody tr");
+      let asc = $(this).attr("data-asc");
+      if ($(this).children("input:checkbox").length) {
+        return;
+      }
+      if (typeof asc === typeof undefined || asc === false) {
+        $(this).attr("data-asc", 1);
+        trnum = 0;
+        rows.sort(function(a, b) {
+          var A = $(a).find('td').eq(parseInt(idx) + 1).html();
+          var B = $(b).find('td').eq(parseInt(idx) + 1).html();
+          if (type[idx] === "number") {
+            console.log("sort number")
+            return A - B;
+          } else if (type[idx] === "string") {
+            return A.localeCompare(B);
+          }
+          return 0;
+        }).appendTo("tbody");
+      } else {
+        trnum = 0;
+        $(rows.get().reverse()).appendTo("tbody");
+      }
+
+      let trIndex = 0;
+      let pageNum = $('.pagination li.active').attr('data-page');
+
+      $('table tbody tr').each(function() {
+        trIndex++;
+        if (trIndex > maxRows * pageNum || trIndex <= maxRows * pageNum - maxRows) {
+          $(this).hide();
+        } else {
+          $(this).show();
+        }
+      });
+    });
+  
+
   }
 }(jQuery));

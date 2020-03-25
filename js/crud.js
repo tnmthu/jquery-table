@@ -51,7 +51,10 @@ $(document).ready(function(){
             $("#test").table({
               data: res,
               width: "570px",
-              columns: columns
+              columns: columns,
+              pagination: {
+                limit: 10
+              }
             });
           });
         },
@@ -71,7 +74,10 @@ $(document).ready(function(){
             $("#test").table({
               data: res,
               width: "570px",
-              columns: columns
+              columns: columns,
+              pagination: {
+                limit: 10
+              }
             });
           });
         },
@@ -82,7 +88,6 @@ $(document).ready(function(){
     });
 
     editedEmps.forEach(emp => {
-      console.log("edited",emp)
       $.ajax({
         url: `http://5b0f708f3c5c110014145cc9.mockapi.io/api/nexacro-demo/${emp.id}`,
         type: "PUT",
@@ -92,7 +97,10 @@ $(document).ready(function(){
             $("#test").table({
               data: res,
               width: "570px",
-              columns: columns
+              columns: columns,
+              pagination: {
+                limit: 10
+              }
             });
           });        
         },
@@ -198,7 +206,7 @@ $(document).ready(function(){
       employee_salary: $("#test").find($("tbody input:checkbox:checked")).closest("tr").find("td.employee_salary").html(),
       employee_age: $("#test").find($("tbody input:checkbox:checked")).closest("tr").find("td.employee_age").html()
     });
-    console.log(editedEmps)
+    $("#test").find("input:checkbox:checked").trigger('click');
   });
 
   // select all checkbox
