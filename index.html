@@ -18,16 +18,15 @@
 </head>
 <body>
   <div class="container">
-    <div class="upper">
-      <button id="btn__add" class="btn">Add</button>
-      <button id="btn__edit" class="btn">Edit</button>
-      <button id="btn__del" class="btn">Delete</button>
-      <button id="btn__save" class="btn">Save</button>
-    </div>
+    <div id="test"></div>
 
-    <div class="lower">
-      <div id="test"></div>
-
+    <div class="right">
+      <div class="upper">
+        <button id="btn__add" class="btn">Add</button>
+        <button id="btn__edit" class="btn">Edit</button>
+        <button id="btn__del" class="btn">Delete</button>
+        <button id="btn__save" class="btn">Save</button>
+      </div>
       <form id="myForm">
         <label for="emp_id" class="label">Id:</label><br>
         <input readonly id="emp_id" name="emp_id"><br>
@@ -43,43 +42,44 @@
 
       </form>
     </div>
+    
   </div>
   <script>
     $(document).ready(function() {
       $.fn.getAllEmp2(function(data) {
         $("#test").table({
-        data: data,
-        width: "570px",
-        columns: [
-          {
-            colName: "Id",
-            dataName: "id",
-            type: "number",
-            width: "8%",
-          },
-          {
-            colName: "Employee",
-            dataName: "employee_name",
-            type: "string",
-            width: "40%",
-          },
-          {
-            colName: "Age",
-            dataName: "employee_age",
-            type: "number",
-            width: "25%"
-          },
-          {
-            colName: "Salary",
-            dataName: "employee_salary",
-            type: "number",
-            width: "25%"
-          },
-        ],
-        pagination: {
-          limit: 5
-        }
-      });
+          data: data,
+          width: "570px",
+          columns: [
+            {
+              colName: "Id",
+              dataName: "id",
+              type: "number",
+              width: "8%",
+            },
+            {
+              colName: "Employee",
+              dataName: "employee_name",
+              type: "string",
+              width: "40%",
+            },
+            {
+              colName: "Age",
+              dataName: "employee_age",
+              type: "number",
+              width: "25%"
+            },
+            {
+              colName: "Salary",
+              dataName: "employee_salary",
+              type: "number",
+              width: "25%"
+            },
+          ],
+          pagination: {
+            limit: 10,
+          }
+        });
       });
     });
   </script>
