@@ -33,10 +33,11 @@
               <td>
                 <input type="checkbox" id="select_${item["id"]}">
               </td>
-              ${dataNames.map(function(elem) {
-                return `
-                  <td class="${elem}">${item[elem]}</td>
-                `
+              ${dataNames.map(function(elem, index) {
+                return (type[index] === "number") ? 
+                `<td class="${elem}">${parseInt(item[elem]).toLocaleString("en")}</td>`
+                : 
+                `<td class="${elem}">${item[elem]}</td>`
               }).join("")}
             </tr>
             `
@@ -56,11 +57,8 @@
         </nav>
       </div>
     `);
- 
-
-
       
-    // pagination
+    // PAGINATION
     let lastPage = 1;
     let trnum = 0;
     const maxRows = pagination.limit;
@@ -137,10 +135,9 @@
         }
       });
     });
-
     limitPaging();
 
-    // sort
+    // SORT
     $(this).find("thead").on("click", "th", function() {
       const idx = $(this).attr("data-idx");
       let rows = $(this).closest("table").find("tbody tr");
@@ -157,8 +154,7 @@
           var A = $(a).find('td').eq(parseInt(idx) + 1).html();
           var B = $(b).find('td').eq(parseInt(idx) + 1).html();
           if (type[idx] === "number") {
-            console.log("sort number")
-            return A - B;
+            return parseInt(A.replace(/,/g, "")) - parseInt(B.replace(/,/g, ""));
           } else if (type[idx] === "string") {
             return A.localeCompare(B);
           }
@@ -182,114 +178,56 @@
       });
       limitPaging();
     });
+
+    // RESIZABLE COLUMNS
+    let isColResizing = false;
+    let resizingPosX = 0;
+    let table = $(this).find("table");
+    let thead = $(this).find("table thead");
+
+    // table.innerWidth(table.innerWidth());
+    thead.find("th").each(function() {
+      $(this).css("position", "relative");
+      // table.innerWidth()
+      if ($(this).is(":not(:last-child)")) {
+        $(this).append(`
+          <div class="resizer" style='position:absolute; top:0px; right:-3px; bottom:0px; width:6px; z-index:999; background:transparent; cursor:col-resize'>
+          </div>
+        `);
+      }
+    });
+
+    $(document).mouseup(function(e) {
+      thead.find("th").removeClass("resizing");
+      isColResizing = false;
+      e.stopPropagation();
+    });
+
+    table.find(".resizer").mousedown(function(e) {
+      thead.find("th").removeClass("resizing");
+      $(this).closest("th").addClass("resizing");
+      resizingPosX = e.pageX;
+      isColResizing = true;
+      e.stopPropagation();
+    });
+
+    table.mousemove(function(e) {
+      if (isColResizing) {
+        let resizing = thead.find("th.resizing .resizer");
+
+        if (resizing.length == 1) {
+          let nextRow = thead.find("th.resizing + th");
+          let pageX = e.pageX || 0;
+          let widthDiff = pageX - resizingPosX;
+          let setWidth = resizing.closest("th").innerWidth() + widthDiff;
+          let nextRowWidth = nextRow.innerWidth() - widthDiff;
+          if (resizingPosX != 0 && widthDiff != 0 && setWidth > 50 && nextRowWidth > 50) {
+            resizing.closest("th").innerWidth(setWidth);
+            resizingPosX = e.pageX;
+            nextRow.innerWidth(nextRowWidth);
+          }
+        }
+      }
+    });
   }
 }(jQuery));
-
-// var Pagination = {
-//   code: '',
-
-//   Add: function(start, end) {
-//     for (let i = start; i < end; i++) 
-//     Pagination.code += `<a>${i}</a>`;
-//   },
-
-//   First: function() {
-//     Pagination.code += `<a>1</a><i>...</i>`;
-//   },
-
-//   Last: function() {
-//     Pagination.code += `<i>...</i><a>${Pagination.limit}</a>`;
-//   },
-
-//   Buttons: function(e) {
-//     e.on("click", "a:first-child", function() {
-//       Pagination.Prev();
-//     });
-//     e.on("click", "a:last-child", function() {
-//       Pagination.Next();
-//     });
-//   },
-
-//   Click: function() {
-//     Pagination.page = parseInt($(this).html());
-//     Pagination.Start();
-//   },
-
-//   Prev: function() {
-//     Pagination.page--;
-//     if (Pagination.page < 1) {
-//       Pagination.page = 1;
-//     }
-//     Pagination.Start();
-//   },
-
-//   Next: function() {
-//     Pagination.page++;
-//     if (Pagination.page > Pagination.limit) {
-//       Pagination.page = Pagination.size;
-//     }
-//     Pagination.Start();
-//   },
-
-//   Extend: function(pagData) {
-//     Pagination.page = 1;
-//     Pagination.limit = pagData.limit || 300;
-//     Pagination.step = pagData.step || 2;
-//   },
-
-//   Create: function(e) {
-//     e.append(`
-//     <a>&#9668;</a>
-//     <span></span>
-//     <a>&#9658;</a>
-//     `);
-//     Pagination.e = e.find("span");
-//     Pagination.Buttons(Pagination.e);
-//   },
-
-//   Start: function(index) {
-//     if (Pagination.limit < Pagination.step * 2 + 6) {
-//       Pagination.Add(1, Pagination.limit + 1);
-//     } else if (Pagination.page < Pagination.step * 2 + 1) {
-//       Pagination.Add(1, Pagination.step * 2 + 4);
-//       Pagination.Last();
-//     } else if (Pagination.page > Pagination.limit - Pagination.step * 2) {
-//       Pagination.First();
-//       Pagination.Add(Pagination.limit - Pagination.step * 2 - 2, Pagination.limit + 1);
-//     } else {
-//       Pagination.First();
-//       Pagination.Add(Pagination.page - Pagination.step, Pagination.page + Pagination.step + 1);
-//       Pagination.Last()
-//     }
-
-//     Pagination.Finish();
-//   },
-
-//   Finish: function() {
-//     Pagination.e.html(Pagination.code);
-//     Pagination.code = "";
-//     Pagination.Bind();
-//   },
-
-//   Bind: function() {
-//     let a = Pagination.e.find("a");
-//     for (let i = 0; i < a.length; i++) {
-//       if (parseInt(a.eq(i).html()) === Pagination.page) {
-//         a.eq(i).addClass("current");
-//       }
-//       a.eq(i).on("click", function() {
-//         Pagination.Click();
-//       });
-//     }
-//   },
-
-//   Init: function(e, pagData, index) {
-//     Pagination.Extend(pagData);
-//     Pagination.Create(e);
-//     Pagination.Start(index);
-//   }
-// };
-
-// (function() {
-// Pagination.Init($('#pagination'), pagination, 1);
-// })();
