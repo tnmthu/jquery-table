@@ -17,7 +17,7 @@
   <script src="./js/crud.js"></script>
 </head>
 <body>
-  <div class="container">
+  <div class="myContainer">
     <div id="test"></div>
 
     <div class="right">
@@ -46,7 +46,7 @@
   </div>
   <script>
     $(document).ready(function() {
-      $.fn.getAllEmp2(function(data) {
+      $.fn.retrieve(function(data) {
         $("#test").table({
           data: data,
           width: "570px",

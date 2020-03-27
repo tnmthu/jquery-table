@@ -38,7 +38,7 @@ table, th, td {
 }
 
 
-.container {
+.myContainer {
   padding: 0;
   display: flex;
   justify-content: space-between;
@@ -80,7 +80,7 @@ input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-.highlight {
+/* .edited {
   background: #ffd5bd;
 }
 .deleted {
@@ -89,6 +89,21 @@ input::-webkit-inner-spin-button {
   pointer-events: none;
 }
 .added {
+  text-decoration: underline;
+} */
+
+.added {
+  background: #ffd5bd;
+}
+.deleted {
+  background: rgb(126, 126, 126);
+  cursor: not-allowed !important;
+  pointer-events: none;
+}
+.edited {
+  font-weight: bold;
+}
+.selected {
   text-decoration: underline;
 }
 

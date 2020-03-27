@@ -1,18 +1,5 @@
 $(document).ready(function(){
-  // get all emp
-  $.fn.getAllEmp2 = function(handleData) {
-    $.ajax({
-      url: "http://5b0f708f3c5c110014145cc9.mockapi.io/api/nexacro-demo",
-      type: "GET",
-      success: function(res) {
-        handleData(res);
-      }
-    });
-  }
 
-  let addedEmps = [];
-  let deletedEmpIds = [];
-  let editedEmps = [];
   let columns = [
     {
       colName: "Id",
@@ -40,77 +27,88 @@ $(document).ready(function(){
     },
   ];
 
-  $("#btn__save").click(function(){
-    addedEmps.forEach(elem => {
-      $.ajax({
-        url: "http://5b0f708f3c5c110014145cc9.mockapi.io/api/nexacro-demo",
-        type: "POST",
-        data: elem,
-        success: function() {
-          $.fn.getAllEmp2(function(res) {
-            $("#test").table({
-              data: res,
-              width: "570px",
-              columns: columns,
-              pagination: {
-                limit: 10
-              }
-            });
-          });
-        },
-        error: function() {
-          console.log("error save add");
-        }
-      }); 
-    });
+  // CREATE NEW EMP
+  $.fn.create = function(emp) {
+    $.ajax({
+      url: "http://5b0f708f3c5c110014145cc9.mockapi.io/api/nexacro-demo",
+      type: "POST",
+      data: emp
+    }); 
+  }
 
-    deletedEmpIds.forEach(id => {
-      $.ajax({
-        url: `http://5b0f708f3c5c110014145cc9.mockapi.io/api/nexacro-demo/${id}`,
-        type: "DELETE",
-        success: function() {
-          console.log("delete success");
-          $.fn.getAllEmp2(function(res) {
-            $("#test").table({
-              data: res,
-              width: "570px",
-              columns: columns,
-              pagination: {
-                limit: 10
-              }
-            });
-          });
-        },
-        error: function() {
-          console.log("error save delete");
-        }
+  // RETRIEVE ALL EMP
+  $.fn.retrieve = function(handleData) {
+    return $.ajax({
+      url: 'http://5b0f708f3c5c110014145cc9.mockapi.io/api/nexacro-demo',
+      type: 'GET',
+      success: function(res) {
+        handleData(res);
+      }
+    });
+  }
+
+  // UPDATE EMP
+  $.fn.update = function(emp) {
+    return $.ajax({
+      url: `http://5b0f708f3c5c110014145cc9.mockapi.io/api/nexacro-demo/${emp.id}`,
+      type: "PUT",
+      data: emp
+    });
+  }
+
+  // DELETE EMP
+  $.fn.delete = function(id) {
+    return $.ajax({
+      url: `http://5b0f708f3c5c110014145cc9.mockapi.io/api/nexacro-demo/${id}`,
+      type: "DELETE"
+    });
+  }
+
+  // SAVE ALL 
+  $("#btn__save").on("click", function() {
+    let rows = $("#test").find("table tbody tr");
+    let ajaxReqs = [];
+    for (let row of rows) {
+      if ($(row).hasClass("deleted") && !$(row).hasClass("added")) {
+        const id = $(row).attr("id");
+        ajaxReqs.push($.fn.delete(parseInt(id)));
+      } else if ($(row).hasClass("added")) {
+        let rowData = {
+          id: $(row).attr("id"),
+          employee_name: $(row).find("td.employee_name").html(),
+          employee_salary: $(row).find("td.employee_salary").html(),
+          employee_age: $(row).find("td.employee_age").html()
+        };
+        ajaxReqs.push($.fn.create(rowData));
+      } else if ($(row).hasClass("edited")) {
+        let rowData = {
+          id: $(row).attr("id"),
+          employee_name: $(row).find("td.employee_name").html(),
+          employee_salary: $(row).find("td.employee_salary").html(),
+          employee_age: $(row).find("td.employee_age").html()
+        };
+        ajaxReqs.push($.fn.update(rowData));
+      }
+    }
+
+    $.when(...ajaxReqs).done(function(res) {
+      $.fn.retrieve(function(res) {
+        $("#test").table({
+          data: res,
+          width: "570px",
+          columns: columns,
+          pagination: {
+            limit: 10
+          }
+        });
       });
+    }).fail(function(err) {
+      alert("Error saving!");
     });
+  })
 
-    editedEmps.forEach(emp => {
-      $.ajax({
-        url: `http://5b0f708f3c5c110014145cc9.mockapi.io/api/nexacro-demo/${emp.id}`,
-        type: "PUT",
-        data: emp,
-        success: function(res) {
-          $.fn.getAllEmp2(function(res) {
-            $("#test").table({
-              data: res,
-              width: "570px",
-              columns: columns,
-              pagination: {
-                limit: 10
-              }
-            });
-          });        
-        },
-        error: function(err) {
-          console.log("edit error", err);
-        }
-      });
-    });
-  });
 
+  // UTILITIES
   $.fn.isInt = function(n) {
     return Number(n) === n && n % 1 === 0;
   }
@@ -126,11 +124,12 @@ $(document).ready(function(){
     return (regex.test(s)) ? true : false;
   }
 
-  // add new emp
+  // BTN_ADD CLICKED
   $("#btn__add").click(function() {
-    let name = $("#emp_name").val();
-    let sal = $("#emp_salary").val();
-    let age = $("#emp_age").val();
+    let name = $("#emp_name").val().trim();
+    let sal = $("#emp_salary").val().trim();
+    let age = $("#emp_age").val().trim();
+
     if (name == "" || sal == "" || age == "") {
       alert("Please fill in properly.")
     } else if ($.fn.isFloat(parseInt(age)) || 20 > parseInt(age) || 65 < parseInt(age)) {
@@ -145,40 +144,35 @@ $(document).ready(function(){
         employee_salary: sal,
         employee_age: age
       };
-      addedEmps.push(values);
       $("#test").find("table tbody").prepend(`
-        <tr>
+        <tr class="added">
           <td>
             <input type="checkbox">
           </td>
-          <td></td>
-          <td>${values["employee_name"]}</td>
-          <td>${values["employee_age"]}</td>
-          <td>${values["employee_salary"]}</td>
+          <td class="id"></td>
+          <td class="employee_name">${values["employee_name"]}</td>
+          <td class="employee_age">${values["employee_age"]}</td>
+          <td class="employee_salary">${values["employee_salary"]}</td>
         </tr>
       `);
+      $("#emp_id, #emp_name, #emp_age, #emp_salary").val("");
     }
   });
 
-  // delete row
+  // BTN_DEL CLICKED
   $("#btn__del").click(function() {
     $("#test").find("tbody tr input[type='checkbox']:checked").each(function() {
+      $(this).trigger('click');
       $(this).closest("tr").addClass("deleted");
       $(this).closest("tr").prop("disabled", "disabled");
-      deletedEmpIds.push($(this).closest("tr").attr("id"));
-    })
+    });
+  });
 
-    $("#test").on("click", "tbody tr", function(e) {
-      if ($(this).is(":checked")) {
-        $(this).addClass("deleted");
-      }
-    })
-  })
-
+  // PASS TABLE DATA TO INPUT
   $('#test').on("click", "tbody input[type='checkbox']", function (e) {
     e.stopPropagation();
     if ($("#test").find($("tbody input:checkbox:checked")).length == 1) { 
-      const id = $("#test").find($("tbody input:checkbox:checked")).closest("tr").attr("id");
+      const id = $("#test").find($("tbody input:checkbox:checked")).closest("tr").attr("id") || null;
       let emp_name = $("#test").find($("tbody input:checkbox:checked")).closest("tr").find("td.employee_name").html();
       let emp_age = $("#test").find($("tbody input:checkbox:checked")).closest("tr").find("td.employee_age").html();
       let emp_sal = $("#test").find($("tbody input:checkbox:checked")).closest("tr").find("td.employee_salary").html();
@@ -193,33 +187,35 @@ $(document).ready(function(){
     }
   });
 
-  
+  // BTN_EDIT CLICKED
   $("#btn__edit").on("click", function() {
-    $("#test").find($("tbody input:checkbox:checked")).closest("tr").addClass("added");
-    $("#test").find($("tbody input:checkbox:checked")).closest("tr").find("td.employee_name").html($("#emp_name").val());
-    $("#test").find($("tbody input:checkbox:checked")).closest("tr").find("td.employee_age").html($("#emp_age").val());
-    $("#test").find($("tbody input:checkbox:checked")).closest("tr").find("td.employee_salary").html($("#emp_salary").val());
-  
-    editedEmps.push({
-      id: $("#test").find($("tbody input:checkbox:checked")).closest("tr").attr("id"),
-      employee_name: $("#test").find($("tbody input:checkbox:checked")).closest("tr").find("td.employee_name").html(),
-      employee_salary: $("#test").find($("tbody input:checkbox:checked")).closest("tr").find("td.employee_salary").html(),
-      employee_age: $("#test").find($("tbody input:checkbox:checked")).closest("tr").find("td.employee_age").html()
-    });
-    $("#test").find("input:checkbox:checked").trigger('click');
-  });
-
-  // select all checkbox
-  $("#test").on("click", "#select_all", function() {
-    $('input:checkbox').not(this).prop('checked', this.checked);
-    if ($(this).is(":checked")) {
-      $('tbody input:checkbox').closest('tr').addClass("highlight");
-    } else {
-      $('tbody input:checkbox').closest('tr').removeClass("highlight");
+    let tr = $("#test").find($("tbody input:checkbox:checked")).closest("tr");
+    if ($(tr).attr("changed")) {
+      $(tr).addClass("edited");
+      $(tr).removeAttr("changed")
+      $(tr).find("td.employee_name").html($("#emp_name").val());
+      $(tr).find("td.employee_age").html($("#emp_age").val());
+      $(tr).find("td.employee_salary").html($("#emp_salary").val());
+    
+      $("#test").find("input:checkbox:checked").trigger('click');
     }
   });
 
-  // check row
+  $("input").on("change paste keyup", function() {
+    $("#test").find($("tbody input:checkbox:checked")).closest("tr").attr("changed", "1");
+  });
+
+  // SELECT ALL
+  $("#test").on("click", "#select_all", function() {
+    $('input:checkbox').not(this).prop('checked', this.checked);
+    if ($(this).is(":checked")) {
+      $('tbody input:checkbox').closest('tr').addClass("selected");
+    } else {
+      $('tbody input:checkbox').closest('tr').removeClass("selected");
+    }
+  });
+
+  // CHECK ROW
   $('#test').on("click", "tbody tr", function(event) {
     $(this).find("input:checkbox").trigger('click');
   });
@@ -228,10 +224,10 @@ $(document).ready(function(){
   $('#test').on("click", "tbody input[type='checkbox']", function (e) {
     e.stopPropagation();
     if ($(this).is(":checked")) { //If the checkbox is checked
-        $(this).closest('tr').addClass("highlight"); 
+        $(this).closest('tr').addClass("selected"); 
         //Add class on checkbox checked
     } else {
-        $(this).closest('tr').removeClass("highlight");
+        $(this).closest('tr').removeClass("selected");
         //Remove class on checkbox uncheck
     }
     if ($("tbody input:checkbox:checked").length != $("tbody input:checkbox").length) {
@@ -240,7 +236,4 @@ $(document).ready(function(){
       $("#select_all").prop('checked', true);
     }
   });
-
-
-  
 });
