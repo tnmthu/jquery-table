@@ -30,7 +30,7 @@ $(document).ready(function(){
   // CREATE NEW EMP
   $.fn.create = function(emp) {
     $.ajax({
-      url: "http://5b0f708f3c5c110014145cc9.mockapi.io/api/nexacro-demo",
+      url: "https://5b0f708f3c5c110014145cc9.mockapi.io/api/nexacro-demo",
       type: "POST",
       data: emp
     }); 
@@ -39,7 +39,7 @@ $(document).ready(function(){
   // RETRIEVE ALL EMP
   $.fn.retrieve = function(handleData) {
     return $.ajax({
-      url: 'http://5b0f708f3c5c110014145cc9.mockapi.io/api/nexacro-demo',
+      url: 'https://5b0f708f3c5c110014145cc9.mockapi.io/api/nexacro-demo',
       type: 'GET',
       success: function(res) {
         handleData(res);
@@ -50,7 +50,7 @@ $(document).ready(function(){
   // UPDATE EMP
   $.fn.update = function(emp) {
     return $.ajax({
-      url: `http://5b0f708f3c5c110014145cc9.mockapi.io/api/nexacro-demo/${emp.id}`,
+      url: `https://5b0f708f3c5c110014145cc9.mockapi.io/api/nexacro-demo/${emp.id}`,
       type: "PUT",
       data: emp
     });
@@ -59,7 +59,7 @@ $(document).ready(function(){
   // DELETE EMP
   $.fn.delete = function(id) {
     return $.ajax({
-      url: `http://5b0f708f3c5c110014145cc9.mockapi.io/api/nexacro-demo/${id}`,
+      url: `https://5b0f708f3c5c110014145cc9.mockapi.io/api/nexacro-demo/${id}`,
       type: "DELETE"
     });
   }
