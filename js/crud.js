@@ -127,8 +127,8 @@ $(document).ready(function(){
   // BTN_ADD CLICKED
   $("#btn__add").click(function() {
     let name = $("#emp_name").val().trim();
-    let sal = $("#emp_salary").val().trim();
-    let age = $("#emp_age").val().trim();
+    let sal = parseInt($("#emp_salary").val().trim());
+    let age = parseInt($("#emp_age").val().trim());
 
     if (name == "" || sal == "" || age == "") {
       alert("Please fill in properly.")
@@ -139,20 +139,15 @@ $(document).ready(function(){
     } else if (!$.fn.isName(name)) {
       alert("Wrong name format.");
     } else {
-      let values = {
-        employee_name: name,
-        employee_salary: sal,
-        employee_age: age
-      };
       $("#test").find("table tbody").prepend(`
         <tr class="added">
           <td>
             <input type="checkbox">
           </td>
           <td class="id"></td>
-          <td class="employee_name">${values["employee_name"]}</td>
-          <td class="employee_age">${values["employee_age"]}</td>
-          <td class="employee_salary">${values["employee_salary"]}</td>
+          <td class="employee_name">${name}</td>
+          <td class="employee_age">${age}</td>
+          <td class="employee_salary">${sal.toLocaleString("en")}</td>
         </tr>
       `);
       $("#emp_id, #emp_name, #emp_age, #emp_salary").val("");
@@ -180,7 +175,7 @@ $(document).ready(function(){
       $("#emp_id").val(id);
       $("#emp_name").val(emp_name);
       $("#emp_age").val(emp_age);
-      $("#emp_salary").val(emp_sal);
+      $("#emp_salary").val(emp_sal.replace(/,/g, ""));
       
     } else {
       $("#emp_id, #emp_name, #emp_age, #emp_salary").val("");

@@ -19,30 +19,34 @@ table, th, td {
   width: 25vw;
 }
 .btn {
+  min-width: fit-content;
   min-height: 30px;
   background: transparent;
   border: 1px solid #979797;
-  border-radius: 20px;
+  /* border-radius: 20px; */
   height: 40px;
   width: 23%;
-  box-shadow: 3px 3px 9px 0px rgba(163,160,163,1);
+  font-weight: bold;
+  /* box-shadow: 3px 3px 9px 0px rgba(163,160,163,1); */
 }
 #btn__add {
-  background-color: #b5b9f0;
+  background-color: #ffd5bd;
 }
 #btn__del {
-  background-color: #f0b5b5;
+  background-color: #e7e7e7;
 }
 #btn__save {
-  background-color: #b5f0c8;
+  background-color: #dbd6ff;
 }
-
+#btn__edit {
+  background-color: #d2ffbd;
+}
 
 .myContainer {
   padding: 0;
   display: flex;
   justify-content: space-between;
-  margin: 10vh 15vw;
+  margin: 10vh 12vw;
 }
 
 th, td {
@@ -80,31 +84,22 @@ input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-/* .edited {
-  background: #ffd5bd;
-}
-.deleted {
-  background: rgb(126, 126, 126);
-  cursor: not-allowed !important;
-  pointer-events: none;
-}
-.added {
-  text-decoration: underline;
-} */
 
 .added {
   background: #ffd5bd;
 }
 .deleted {
-  background: rgb(126, 126, 126);
+  background: #e7e7e7;
   cursor: not-allowed !important;
   pointer-events: none;
+  opacity: 0.6;
 }
 .edited {
+  background: #d2ffbd;
   font-weight: bold;
 }
 .selected {
-  text-decoration: underline;
+  background: #dbd6ff;
 }
 
 .pagination > .active > span,
