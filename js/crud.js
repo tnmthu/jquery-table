@@ -200,17 +200,17 @@ $(document).ready(function() {
     if ($("tbody input:checkbox:checked").length > 1) {
       if ($(tr).attr("changed")) {
         sal = $("#emp_salary").val().trim();
-        tr.each(function() {
-          if (!$.fn.isMoney(parseInt(sal))) {
-            alert("Salary must be in money type. Eg. 1000000");
-          } else {
+        if (!$.fn.isMoney(parseInt(sal))) {
+          alert("Salary must be in money type. Eg. 1000000");
+        } else {
+          tr.each(function() {
             $(this).find("td.employee_salary").html(parseInt(sal).toLocaleString("en"));
             $("#emp_id, #emp_name, #emp_age, #emp_salary").val("");
             $("#test").find("input:checkbox:checked").trigger('click');
             $(this).addClass("edited");
             $(this).removeAttr("changed");  
-          }
-        });
+          });
+        }
         return;
       }
     } else {
