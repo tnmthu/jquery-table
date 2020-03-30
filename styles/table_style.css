@@ -1,7 +1,8 @@
 table {
-  border: 1px solid #000;
+  border: 1px solid #999;
   min-width: fit-content;
   width: 100%;
+  color: #000;
 }
 thead {
   color: #000;
@@ -12,12 +13,12 @@ thead th input {
 }
 th, td {
   padding: 10px;
-  border: 1px solid #000;
-
+  border: 1px solid #999;
 }
 th {
   min-width: fit-content;
   font-weight: bold;
+  cursor: pointer;
 }
 
 .pagination > .active > span,
@@ -29,4 +30,5 @@ th {
 }
 .pagination>li>span {
   color: #000;
+  cursor: pointer;
 }
