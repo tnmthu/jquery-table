@@ -76,7 +76,7 @@ $(document).ready(function(){
         let rowData = {
           id: $(row).attr("id"),
           employee_name: $(row).find("td.employee_name").html(),
-          employee_salary: $(row).find("td.employee_salary").html(),
+          employee_salary: $(row).find("td.employee_salary").html().replace(/,/g, ""),
           employee_age: $(row).find("td.employee_age").html()
         };
         ajaxReqs.push($.fn.create(rowData));
@@ -84,7 +84,7 @@ $(document).ready(function(){
         let rowData = {
           id: $(row).attr("id"),
           employee_name: $(row).find("td.employee_name").html(),
-          employee_salary: $(row).find("td.employee_salary").html(),
+          employee_salary: $(row).find("td.employee_salary").html().replace(/,/g, ""),
           employee_age: $(row).find("td.employee_age").html()
         };
         ajaxReqs.push($.fn.update(rowData));
@@ -151,6 +151,7 @@ $(document).ready(function(){
         </tr>
       `);
       $("#emp_id, #emp_name, #emp_age, #emp_salary").val("");
+      $("#test").find("input:checkbox:checked").trigger('click');
     }
   });
 
@@ -167,6 +168,7 @@ $(document).ready(function(){
   $('#test').on("click", "tbody input[type='checkbox']", function (e) {
     e.stopPropagation();
     if ($("#test").find($("tbody input:checkbox:checked")).length == 1) { 
+      $("#emp_id, #emp_name, #emp_age").prop("disabled", false);
       const id = $("#test").find($("tbody input:checkbox:checked")).closest("tr").attr("id") || null;
       let emp_name = $("#test").find($("tbody input:checkbox:checked")).closest("tr").find("td.employee_name").html();
       let emp_age = $("#test").find($("tbody input:checkbox:checked")).closest("tr").find("td.employee_age").html();
@@ -177,7 +179,11 @@ $(document).ready(function(){
       $("#emp_age").val(emp_age);
       $("#emp_salary").val(emp_sal.replace(/,/g, ""));
       
+    } else if ($("#test").find($("tbody input:checkbox:checked")).length > 1) {
+      $("#emp_id, #emp_name, #emp_age, #emp_salary").val("");
+      $("#emp_id, #emp_name, #emp_age").prop("disabled", true);
     } else {
+      $("#emp_id, #emp_name, #emp_age").prop("disabled", false);
       $("#emp_id, #emp_name, #emp_age, #emp_salary").val("");
     }
   });
@@ -185,14 +191,44 @@ $(document).ready(function(){
   // BTN_EDIT CLICKED
   $("#btn__edit").on("click", function() {
     let tr = $("#test").find($("tbody input:checkbox:checked")).closest("tr");
-    if ($(tr).attr("changed")) {
+    if ($("#select_all:checked") || $("tbody input:checkbox:checked").length > 1) {
+      if ($(tr).attr("changed")) {
+        sal = $("#emp_salary").val().trim();
+        tr.each(function() {
+          $(this).addClass("edited");
+          $(this).removeAttr("changed");
+
+          if (!$.fn.isMoney(parseInt(sal))) {
+            alert("Salary must be in money type. Eg. 1000000");
+          }
+          $(this).find("td.employee_salary").html(parseInt(sal).toLocaleString("en"));
+          $("#emp_id, #emp_name, #emp_age, #emp_salary").val("");
+          $("#test").find("input:checkbox:checked").trigger('click');
+        });
+        return;
+      }
+    } else if ($(tr).attr("changed")) {
       $(tr).addClass("edited");
-      $(tr).removeAttr("changed")
-      $(tr).find("td.employee_name").html($("#emp_name").val());
-      $(tr).find("td.employee_age").html($("#emp_age").val());
-      $(tr).find("td.employee_salary").html($("#emp_salary").val());
-    
-      $("#test").find("input:checkbox:checked").trigger('click');
+      $(tr).removeAttr("changed");
+
+      let name = $("#emp_name").val().trim();
+      let age = $("#emp_age").val().trim();
+      let sal = $("#emp_salary").val().trim();
+
+      if ($.fn.isFloat(parseInt(age)) || 20 > parseInt(age) || 65 < parseInt(age)) {
+        alert("Age must be an integer, > 20, < 65.");
+      } else if (!$.fn.isMoney(parseInt(sal))) {
+        alert("Salary must be in money type. Eg. 1000000");
+      } else if (!$.fn.isName(name)) {
+        alert("Wrong name format.");
+      } else {
+        $(tr).find("td.employee_name").html(name);
+        $(tr).find("td.employee_age").html(age);
+        $(tr).find("td.employee_salary").html(parseInt(sal).toLocaleString("en"));
+      
+        $("#emp_id, #emp_name, #emp_age, #emp_salary").val("");
+        $("#test").find("input:checkbox:checked").trigger('click');
+      }
     }
   });
 
@@ -205,7 +241,10 @@ $(document).ready(function(){
     $('input:checkbox').not(this).prop('checked', this.checked);
     if ($(this).is(":checked")) {
       $('tbody input:checkbox').closest('tr').addClass("selected");
+      $("#emp_id, #emp_name, #emp_age, #emp_salary").val("");
+      $("#emp_id, #emp_name, #emp_age").prop("disabled", true);
     } else {
+      $("#emp_id, #emp_name, #emp_age").prop("disabled", false);
       $('tbody input:checkbox').closest('tr').removeClass("selected");
     }
   });

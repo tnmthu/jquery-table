@@ -1,0 +1,32 @@
+table {
+  border: 1px solid #000;
+  min-width: fit-content;
+  width: 100%;
+}
+thead {
+  color: #000;
+  background-color: #bbb2fc;
+}
+thead th input {
+  width: fit-content;
+}
+th, td {
+  padding: 10px;
+  border: 1px solid #000;
+
+}
+th {
+  min-width: fit-content;
+  font-weight: bold;
+}
+
+.pagination > .active > span,
+.pagination > .active > span, .pagination > .active > span:hover 
+{
+  background-color: #bbb2fc;
+  border-color: #bbb2fc;
+  color: #000;
+}
+.pagination>li>span {
+  color: #000;
+}

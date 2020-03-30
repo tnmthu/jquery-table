@@ -17,13 +17,16 @@
       type.push(item.type);
     });
 
+    //  style="width: ${stripQuotes(width)}"
+    // width: ${stripQuotes(widths[index])}; 
+    // style=" width: ${stripQuotes(widths[index])}; border-color: #fff;"
     $(this).empty();
     $(this).append(`
       <table style="width: ${stripQuotes(width)}">
-        <thead style="background-color: #0f007c; color: #fff;">
-          <th style="border-color: #fff;"><input type="checkbox" id="select_all" value="select_all"></th>
+        <thead>
+          <th><input type="checkbox" id="select_all" value="select_all"></th>
           ${headers.map(function(item, index) {
-            return `<th data-idx="${index}" style="width: ${stripQuotes(widths[index])}; border-color: #fff;">${item}</th>`
+            return `<th data-idx="${index}" style="width: ${stripQuotes(widths[index])};">${item}</th>`
           }).join("")}
         </thead>
         <tbody>
@@ -200,6 +203,7 @@
     $(document).mouseup(function(e) {
       thead.find("th").removeClass("resizing");
       isColResizing = false;
+      $('table thead th, table tbody td').css('pointer-events', 'auto');
       e.stopPropagation();
     });
 
@@ -208,6 +212,9 @@
       $(this).closest("th").addClass("resizing");
       resizingPosX = e.pageX;
       isColResizing = true;
+
+      $('table thead th, table tbody td').css('pointer-events', 'none');
+
       e.stopPropagation();
     });
 
