@@ -99,7 +99,9 @@ $(document).ready(function(){
           columns: columns,
           pagination: {
             limit: 10
-          }
+          },
+          resizable: true,
+          sort: true
         });
       });
     }).fail(function(err) {
@@ -160,7 +162,7 @@ $(document).ready(function(){
     $("#test").find("tbody tr input[type='checkbox']:checked").each(function() {
       $(this).trigger('click');
       $(this).closest("tr").addClass("deleted");
-      $(this).closest("tr").prop("disabled", "disabled");
+      $(this).closest("tr").prop("disabled", true);
     });
   });
 
@@ -238,9 +240,10 @@ $(document).ready(function(){
 
   // SELECT ALL
   $("#test").on("click", "#select_all", function() {
-    $('input:checkbox').not(this).prop('checked', this.checked);
+    let ignore = $("#test").find("tbody tr.deleted input:checkbox, input:checkbox:eq(0)") || null;
+    $(`input:checkbox`).not(ignore).prop('checked', this.checked);
     if ($(this).is(":checked")) {
-      $('tbody input:checkbox').closest('tr').addClass("selected");
+      $('tbody input:checkbox:checked').closest('tr').addClass("selected");
       $("#emp_id, #emp_name, #emp_age, #emp_salary").val("");
       $("#emp_id, #emp_name, #emp_age").prop("disabled", true);
     } else {

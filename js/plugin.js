@@ -4,7 +4,7 @@
       return s.replace(/['"]+\g/, '');
     }
 
-    const { columns, data, width, pagination } = metadata;
+    const { columns, data, width, pagination, resizable = false, sort = false } = metadata;
     const headers = [];
     const dataNames = [];
     const widths = [];
@@ -17,9 +17,6 @@
       type.push(item.type);
     });
 
-    //  style="width: ${stripQuotes(width)}"
-    // width: ${stripQuotes(widths[index])}; 
-    // style=" width: ${stripQuotes(widths[index])}; border-color: #fff;"
     $(this).empty();
     $(this).append(`
       <table style="width: ${stripQuotes(width)}">
@@ -141,100 +138,102 @@
     limitPaging();
 
     // SORT
-    $(this).find("thead").on("click", "th", function() {
-      const idx = $(this).attr("data-idx");
-      let rows = $(this).closest("table").find("tbody tr");
-      let asc = $(this).attr("data-asc");
-      $(this).siblings().removeAttr("data-asc");
-
-      if ($(this).children("input:checkbox").length) {
-        return;
-      }
-      if (typeof asc === typeof undefined || asc === false) {
-        $(this).attr("data-asc", 1);
-        trnum = 0;
-        rows.sort(function(a, b) {
-          var A = $(a).find('td').eq(parseInt(idx) + 1).html();
-          var B = $(b).find('td').eq(parseInt(idx) + 1).html();
-          if (type[idx] === "number") {
-            return parseInt(A.replace(/,/g, "")) - parseInt(B.replace(/,/g, ""));
-          } else if (type[idx] === "string") {
-            return A.localeCompare(B);
-          }
-          return 0;
-        }).appendTo("tbody");
-      } else {
-        trnum = 0;
-        $(rows.get().reverse()).appendTo("tbody");
-      }
-
-      let trIndex = 0;
-      let pageNum = $('.pagination li.active').attr('data-page');
-
-      $('table tbody tr').each(function() {
-        trIndex++;
-        if (trIndex > maxRows * pageNum || trIndex <= maxRows * pageNum - maxRows) {
-          $(this).hide();
-        } else {
-          $(this).show();
+    if (sort) {
+      $(this).find("thead").on("click", "th", function() {
+        const idx = $(this).attr("data-idx");
+        let rows = $(this).closest("table").find("tbody tr");
+        let asc = $(this).attr("data-asc");
+        $(this).siblings().removeAttr("data-asc");
+  
+        if ($(this).children("input:checkbox").length) {
+          return;
         }
+        if (typeof asc === typeof undefined || asc === false) {
+          $(this).attr("data-asc", 1);
+          trnum = 0;
+          rows.sort(function(a, b) {
+            var A = $(a).find('td').eq(parseInt(idx) + 1).html();
+            var B = $(b).find('td').eq(parseInt(idx) + 1).html();
+            if (type[idx] === "number") {
+              return parseInt(A.replace(/,/g, "")) - parseInt(B.replace(/,/g, ""));
+            } else if (type[idx] === "string") {
+              return A.localeCompare(B);
+            }
+            return 0;
+          }).appendTo("tbody");
+        } else {
+          trnum = 0;
+          $(rows.get().reverse()).appendTo("tbody");
+        }
+  
+        let trIndex = 0;
+        let pageNum = $('.pagination li.active').attr('data-page');
+  
+        $('table tbody tr').each(function() {
+          trIndex++;
+          if (trIndex > maxRows * pageNum || trIndex <= maxRows * pageNum - maxRows) {
+            $(this).hide();
+          } else {
+            $(this).show();
+          }
+        });
+        limitPaging();
       });
-      limitPaging();
-    });
+    }
 
     // RESIZABLE COLUMNS
-    let isColResizing = false;
-    let resizingPosX = 0;
-    let table = $(this).find("table");
-    let thead = $(this).find("table thead");
-
-    // table.innerWidth(table.innerWidth());
-    thead.find("th").each(function() {
-      $(this).css("position", "relative");
-      // table.innerWidth()
-      if ($(this).is(":not(:last-child)")) {
-        $(this).append(`
-          <div class="resizer" style='position:absolute; top:0px; right:-3px; bottom:0px; width:6px; z-index:999; background:transparent; cursor:col-resize'>
-          </div>
-        `);
-      }
-    });
-
-    $(document).mouseup(function(e) {
-      thead.find("th").removeClass("resizing");
-      isColResizing = false;
-      $('table thead th, table tbody td').css('pointer-events', 'auto');
-      e.stopPropagation();
-    });
-
-    table.find(".resizer").mousedown(function(e) {
-      thead.find("th").removeClass("resizing");
-      $(this).closest("th").addClass("resizing");
-      resizingPosX = e.pageX;
-      isColResizing = true;
-
-      $('table thead th, table tbody td').css('pointer-events', 'none');
-
-      e.stopPropagation();
-    });
-
-    table.mousemove(function(e) {
-      if (isColResizing) {
-        let resizing = thead.find("th.resizing .resizer");
-
-        if (resizing.length == 1) {
-          let nextRow = thead.find("th.resizing + th");
-          let pageX = e.pageX || 0;
-          let widthDiff = pageX - resizingPosX;
-          let setWidth = resizing.closest("th").innerWidth() + widthDiff;
-          let nextRowWidth = nextRow.innerWidth() - widthDiff;
-          if (resizingPosX != 0 && widthDiff != 0 && setWidth > 50 && nextRowWidth > 50) {
-            resizing.closest("th").innerWidth(setWidth);
-            resizingPosX = e.pageX;
-            nextRow.innerWidth(nextRowWidth);
+    if (resizable) {
+      let isColResizing = false;
+      let resizingPosX = 0;
+      let table = $(this).find("table");
+      let thead = $(this).find("table thead");
+  
+      thead.find("th").each(function() {
+        $(this).css("position", "relative");
+        if ($(this).is(":not(:last-child)")) {
+          $(this).append(`
+            <div class="resizer" style='position:absolute; top:0px; right:-3px; bottom:0px; width:6px; z-index:999; background:transparent; cursor:col-resize'>
+            </div>
+          `);
+        }
+      });
+  
+      $(document).mouseup(function(e) {
+        thead.find("th").removeClass("resizing");
+        isColResizing = false;
+        $('table thead th, table tbody td').css('pointer-events', 'auto');
+        e.stopPropagation();
+      });
+  
+      table.find(".resizer").mousedown(function(e) {
+        thead.find("th").removeClass("resizing");
+        $(this).closest("th").addClass("resizing");
+        resizingPosX = e.pageX;
+        isColResizing = true;
+  
+        $('table thead th, table tbody td').css('pointer-events', 'none');
+  
+        e.stopPropagation();
+      });
+  
+      table.mousemove(function(e) {
+        if (isColResizing) {
+          let resizing = thead.find("th.resizing .resizer");
+  
+          if (resizing.length == 1) {
+            let nextRow = thead.find("th.resizing + th");
+            let pageX = e.pageX || 0;
+            let widthDiff = pageX - resizingPosX;
+            let setWidth = resizing.closest("th").innerWidth() + widthDiff;
+            let nextRowWidth = nextRow.innerWidth() - widthDiff;
+            if (resizingPosX != 0 && widthDiff != 0 && setWidth > 50 && nextRowWidth > 50) {
+              resizing.closest("th").innerWidth(setWidth);
+              resizingPosX = e.pageX;
+              nextRow.innerWidth(nextRowWidth);
+            }
           }
         }
-      }
-    });
+      });
+    }    
   }
 }(jQuery));
