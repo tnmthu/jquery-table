@@ -139,7 +139,7 @@
 
     // SORT
     if (sort) {
-      $(this).find("thead").on("click", "th", function() {
+      $(this).find("thead").on("click", "th:gt(0)", function() {
         const idx = $(this).attr("data-idx");
         let rows = $(this).closest("table").find("tbody tr");
         let asc = $(this).attr("data-asc");
