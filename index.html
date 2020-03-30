@@ -36,7 +36,7 @@
         <input id="emp_name" name="emp_name" type="text" required><br>
 
         <label for="emp_age" class="label">Age:</label><br>
-        <input id="emp_age" name="emp_age" type="number" required><br>
+        <input id="emp_age" name="emp_age" type="number" onkeydown="return event.keyCode !== 69 && event.keyCode !== 101 && event.keyCode !== 45 && event.keyCode !== 43" required><br>
 
         <label for="emp_salary" class="label">Salary:</label><br>
         <input id="emp_salary" name="emp_salary" type="number" required><br>

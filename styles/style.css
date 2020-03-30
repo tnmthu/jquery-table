@@ -40,7 +40,7 @@ body {
   margin: 10vh 7%;
 }
 .right {
-  width: 27vw;
+  width: 30vw;
 }
 
 #myForm {
@@ -81,7 +81,6 @@ input::-webkit-inner-spin-button {
 }
 .selected {
   background: #ece9ff;
-  /* font-weight: bold; */
 }
 
 @media screen and (max-width: 1070px) {

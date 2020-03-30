@@ -125,6 +125,10 @@ $(document).ready(function(){
     let regex = /^[a-zA-Z ]+$/;
     return (regex.test(s)) ? true : false;
   }
+  $.fn.includeEe = function(s) {
+    let regex = /[eE+-]/g;
+    return (regex.test(s)) ? true : false;
+  }
 
   // BTN_ADD CLICKED
   $("#btn__add").click(function() {
@@ -134,7 +138,7 @@ $(document).ready(function(){
 
     if (name == "" || sal == "" || age == "") {
       alert("Please fill in properly.")
-    } else if ($.fn.isFloat(parseInt(age)) || 20 > parseInt(age) || 65 < parseInt(age)) {
+    } else if ($.fn.includeEe(age) || $.fn.isFloat(parseInt(age)) || 20 > parseInt(age) || 65 < parseInt(age)) {
       alert("Age must be an integer, > 20, < 65.");
     } else if (!$.fn.isMoney(parseInt(sal))) {
       alert("Salary must be in money type. Eg. 1000000");
@@ -197,29 +201,23 @@ $(document).ready(function(){
       if ($(tr).attr("changed")) {
         sal = $("#emp_salary").val().trim();
         tr.each(function() {
-          $(this).addClass("edited");
-          $(this).removeAttr("changed");
-
           if (!$.fn.isMoney(parseInt(sal))) {
             alert("Salary must be in money type. Eg. 1000000");
+          } else {
+            $(this).find("td.employee_salary").html(parseInt(sal).toLocaleString("en"));
+            $("#emp_id, #emp_name, #emp_age, #emp_salary").val("");
+            $("#test").find("input:checkbox:checked").trigger('click');
+            $(this).addClass("edited");
+            $(this).removeAttr("changed");  
           }
-          $(this).find("td.employee_salary").html(parseInt(sal).toLocaleString("en"));
-          $("#emp_id, #emp_name, #emp_age, #emp_salary").val("");
-          $("#test").find("input:checkbox:checked").trigger('click');
         });
         return;
       }
     } else {
-      console.log("eles");
-      if ($(tr).attr("changed")) {
-        console.log("else if")
-        $(tr).addClass("edited");
-        $(tr).removeAttr("changed");
-  
+      if ($(tr).attr("changed")) {  
         let name = $("#emp_name").val().trim();
         let age = $("#emp_age").val().trim();
         let sal = $("#emp_salary").val().trim();
-        console.log("a", name)
   
         if ($.fn.isFloat(parseInt(age)) || 20 > parseInt(age) || 65 < parseInt(age)) {
           alert("Age must be an integer, > 20, < 65.");
@@ -232,6 +230,9 @@ $(document).ready(function(){
           $(tr).find("td.employee_age").html(age);
           $(tr).find("td.employee_salary").html(parseInt(sal).toLocaleString("en"));
         
+          $(tr).addClass("edited");
+          $(tr).removeAttr("changed");
+
           $("#emp_id, #emp_name, #emp_age, #emp_salary").val("");
           $("#test").find("input:checkbox:checked").trigger('click');
         }
