@@ -11,9 +11,6 @@ body {
   display: flex;
   justify-content: space-between;
 }
-.right {
-  width: 25vw;
-}
 .btn {
   min-width: fit-content;
   min-height: 30px;
@@ -40,7 +37,10 @@ body {
   padding: 0;
   display: flex;
   justify-content: space-between;
-  margin: 10vh 12vw;
+  margin: 10vh 7%;
+}
+.right {
+  width: 27vw;
 }
 
 #myForm {
@@ -82,4 +82,13 @@ input::-webkit-inner-spin-button {
 .selected {
   background: #ece9ff;
   /* font-weight: bold; */
+}
+
+@media screen and (max-width: 1070px) {
+  .myContainer {
+    flex-direction: column;
+    align-items: center;
+    margin: 6vh auto;
+    width: 80%;
+  }
 }

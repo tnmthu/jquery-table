@@ -193,7 +193,7 @@ $(document).ready(function(){
   // BTN_EDIT CLICKED
   $("#btn__edit").on("click", function() {
     let tr = $("#test").find($("tbody input:checkbox:checked")).closest("tr");
-    if ($("#select_all:checked") || $("tbody input:checkbox:checked").length > 1) {
+    if ($("tbody input:checkbox:checked").length > 1) {
       if ($(tr).attr("changed")) {
         sal = $("#emp_salary").val().trim();
         tr.each(function() {
@@ -209,28 +209,33 @@ $(document).ready(function(){
         });
         return;
       }
-    } else if ($(tr).attr("changed")) {
-      $(tr).addClass("edited");
-      $(tr).removeAttr("changed");
-
-      let name = $("#emp_name").val().trim();
-      let age = $("#emp_age").val().trim();
-      let sal = $("#emp_salary").val().trim();
-
-      if ($.fn.isFloat(parseInt(age)) || 20 > parseInt(age) || 65 < parseInt(age)) {
-        alert("Age must be an integer, > 20, < 65.");
-      } else if (!$.fn.isMoney(parseInt(sal))) {
-        alert("Salary must be in money type. Eg. 1000000");
-      } else if (!$.fn.isName(name)) {
-        alert("Wrong name format.");
-      } else {
-        $(tr).find("td.employee_name").html(name);
-        $(tr).find("td.employee_age").html(age);
-        $(tr).find("td.employee_salary").html(parseInt(sal).toLocaleString("en"));
-      
-        $("#emp_id, #emp_name, #emp_age, #emp_salary").val("");
-        $("#test").find("input:checkbox:checked").trigger('click');
-      }
+    } else {
+      console.log("eles");
+      if ($(tr).attr("changed")) {
+        console.log("else if")
+        $(tr).addClass("edited");
+        $(tr).removeAttr("changed");
+  
+        let name = $("#emp_name").val().trim();
+        let age = $("#emp_age").val().trim();
+        let sal = $("#emp_salary").val().trim();
+        console.log("a", name)
+  
+        if ($.fn.isFloat(parseInt(age)) || 20 > parseInt(age) || 65 < parseInt(age)) {
+          alert("Age must be an integer, > 20, < 65.");
+        } else if (!$.fn.isMoney(parseInt(sal))) {
+          alert("Salary must be in money type. Eg. 1000000");
+        } else if (!$.fn.isName(name)) {
+          alert("Wrong name format.");
+        } else {
+          $(tr).find("td.employee_name").html(name);
+          $(tr).find("td.employee_age").html(age);
+          $(tr).find("td.employee_salary").html(parseInt(sal).toLocaleString("en"));
+        
+          $("#emp_id, #emp_name, #emp_age, #emp_salary").val("");
+          $("#test").find("input:checkbox:checked").trigger('click');
+        }
+      } 
     }
   });
 
