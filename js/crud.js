@@ -187,7 +187,6 @@ $(document).ready(function() {
 
     if ($("#test").find("tbody tr[clicked=1]").length == 1) {
       let tr = $("#test").find("tbody tr[clicked=1]");
-      $("#emp_id, #emp_name, #emp_age").prop("disabled", false); // allow inputs
       const id = tr.attr("id") || null; // null for editing newly added rows
       let emp_name = tr.find("td.employee_name").html();
       let emp_age = tr.find("td.employee_age").html();
