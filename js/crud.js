@@ -158,7 +158,6 @@ $(document).ready(function() {
         </tr>
       `);
       $("#emp_id, #emp_name, #emp_age, #emp_salary").val(""); // empty out inputs
-      $("#test").find("input:checkbox:checked").trigger('click'); // uncheck row
     }
   });
 
@@ -169,7 +168,8 @@ $(document).ready(function() {
       $(this).trigger('click'); // uncheck row
       $(this).closest("tr").find("td:gt(0)").removeClass("selected");
       $(this).closest("tr").addClass("deleted");
-      $(this).closest("tr").prop("disabled", true); // disable row
+      $(this).attr("disabled", true); // disable checkbox
+      $(this).closest("tr").find("td").prop("disabled", true); // disable row
     });
   });
 

@@ -225,9 +225,7 @@
         $(this).closest("th").addClass("resizing");
         resizingPosX = e.pageX; // get the horizontal coordinate
         isColResizing = true;
-  
         $('table thead th, table tbody td').css('pointer-events', 'none');
-  
         e.stopPropagation();
       });
   
