@@ -265,9 +265,9 @@ $(document).ready(function() {
   });
 
   // CHECK ROW
-  $('#test').on("click", "tbody tr", function(event) {
-    $(this).find("input:checkbox").trigger('click');
-  });
+  // $('#test').on("click", "tbody tr", function(event) {
+  //   $(this).find("input:checkbox").trigger('click');
+  // });
 
 
   $('#test').on("click", "tbody input[type='checkbox']", function (e) {

@@ -12,7 +12,7 @@ thead th input {
   width: fit-content;
 }
 tr {
-  cursor: pointer;
+  /* cursor: pointer; */
 }
 th, td {
   padding: 10px;
