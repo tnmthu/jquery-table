@@ -164,23 +164,24 @@ $(document).ready(function() {
 
   // BTN_DEL CLICKED
   $("#btn__del").click(function() {
+    $("#emp_id, #emp_name, #emp_age, #emp_salary").val(""); // empty out inputs
     $("#test").find("tbody tr input[type='checkbox']:checked").each(function() {
       $(this).trigger('click'); // uncheck row
+      $(this).closest("tr").find("td:gt(0)").removeClass("selected");
       $(this).closest("tr").addClass("deleted");
       $(this).closest("tr").prop("disabled", true); // disable row
     });
   });
 
   // PASS TABLE DATA TO INPUT
-  $("#test").on("click", "tbody tr", function() {
+  $("#test").on("click", "tbody tr td:not(:first-child)", function() {
     // clicked flag
-    if ($(this).attr("clicked")) {
-      $(this).removeAttr("clicked");
-      $(this).find("td:gt(0)").removeClass("selected");
+    if ($(this).closest("tr").attr("clicked")) {
+      $(this).closest("tr").removeAttr("clicked");
+      $(this).closest("tr").find("td:gt(0)").removeClass("selected");
     } else {
-      $(this).attr("clicked", 1);
-      $(this).siblings().removeAttr("clicked");
-      $(this).find("td:gt(0)").addClass("selected");
+      $(this).closest("tr").attr("clicked", 1);
+      $(this).closest("tr").find("td:not(:first-child)").addClass("selected");
     }
 
     if ($("#test").find("tbody tr[clicked=1]").length == 1) {
