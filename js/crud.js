@@ -181,6 +181,8 @@ $(document).ready(function() {
       $(this).closest("tr").find("td:gt(0)").removeClass("selected");
     } else {
       $(this).closest("tr").attr("clicked", 1);
+      $(this).closest("tr").siblings().removeAttr("clicked");
+      $(this).closest("tr").siblings().find("td:not(:first-child)").removeClass("selected");
       $(this).closest("tr").find("td:not(:first-child)").addClass("selected");
     }
 
@@ -196,7 +198,8 @@ $(document).ready(function() {
       $("#emp_name").val(emp_name);
       $("#emp_age").val(emp_age);
       $("#emp_salary").val(emp_sal.replace(/,/g, "") || null); // remove money format
-    } else {
+    } 
+    else {
       $("#emp_id, #emp_name, #emp_age, #emp_salary").prop("disabled", false);
       $("#emp_id, #emp_name, #emp_age, #emp_salary").val("");
     }
