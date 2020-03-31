@@ -188,10 +188,10 @@ $(document).ready(function() {
       $("#emp_salary").val(emp_sal.replace(/,/g, "")); // remove money format
       
     } else if ($("#test").find($("tbody input:checkbox:checked")).length > 1) {
-      //
+      // more than 1 row are checked -> can edit only salary
       $("#emp_id, #emp_name, #emp_age, #emp_salary").val("");
       $("#emp_id, #emp_name, #emp_age").prop("disabled", true);
-    } else {
+    } else { // none is checked -> inputs free
       $("#emp_id, #emp_name, #emp_age").prop("disabled", false);
       $("#emp_id, #emp_name, #emp_age, #emp_salary").val("");
     }
