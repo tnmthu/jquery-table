@@ -163,7 +163,6 @@ $(document).ready(function() {
 
   // BTN_DEL CLICKED
   $("#btn__del").click(function() {
-    $("#emp_id, #emp_name, #emp_age, #emp_salary").val(""); // empty out inputs
     $("#test").find("tbody tr input[type='checkbox']:checked").each(function() {
       $(this).trigger('click'); // uncheck row
       $(this).closest("tr").find("td:gt(0)").removeClass("selected");
