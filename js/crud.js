@@ -176,11 +176,11 @@ $(document).ready(function() {
     // clicked flag
     if ($(this).attr("clicked")) {
       $(this).removeAttr("clicked");
-      $(this).removeClass("selected");
+      $(this).find("td:gt(0)").removeClass("selected");
     } else {
       $(this).attr("clicked", 1);
       $(this).siblings().removeAttr("clicked");
-      $(this).addClass("selected");
+      $(this).find("td:gt(0)").addClass("selected");
     }
 
     if ($("#test").find("tbody tr[clicked=1]").length == 1) {
@@ -223,7 +223,7 @@ $(document).ready(function() {
         $(tr).find("td.employee_salary").html(parseInt(sal).toLocaleString("en"));
       
         $(tr).addClass("edited");
-        $(tr).removeClass("selected");
+        $(tr).find("td:gt(0)").removeClass("selected");
         $(tr).removeAttr("changed, clicked");
 
         $("#emp_id, #emp_name, #emp_age, #emp_salary").val("");
@@ -242,12 +242,10 @@ $(document).ready(function() {
     // check all checkboxes
     $(`input:checkbox`).not(ignore).prop('checked', this.checked);
     if ($(this).is(":checked")) {
-      $('tbody input:checkbox:checked').closest('tr').addClass("selected");
+      $('tbody input:checkbox:checked').closest("td").addClass("selected");
       $("#emp_id, #emp_name, #emp_age, #emp_salary").val("");
-      $("#emp_id, #emp_name, #emp_age, #emp_salary").prop("disabled", true);
     } else {
-      $("#emp_id, #emp_name, #emp_age").prop("disabled", false);
-      $('tbody input:checkbox').closest('tr').removeClass("selected");
+      $('tbody input:checkbox').closest("td").removeClass("selected");
     }
   });
 
@@ -256,14 +254,13 @@ $(document).ready(function() {
   //   $(this).find("input:checkbox").trigger('click');
   // });
 
-
   $('#test').on("click", "tbody input[type='checkbox']", function (e) {
     e.stopPropagation();
     if ($(this).is(":checked")) { // if the checkbox is checked
-        $(this).closest('tr').addClass("selected"); 
+        $(this).closest('td').addClass("selected"); 
         // add class on checkbox checked
     } else {
-        $(this).closest('tr').removeClass("selected");
+        $(this).closest('td').removeClass("selected");
         // remove class on checkbox uncheck
     }
     // if not all rows checked -> remove check all
