@@ -49,12 +49,7 @@
       <div class="pagination_container">
         <nav>
           <ul class="pagination">
-            <li data-page="prev">
-              <span> < <span class="sr-only">(current)</span></span>
-            </li>
-            <li data-page="next" id="prev">
-              <span> > <span class="sr-only">(current)</span></span>
-            </li>
+            
           </ul>
         </nav>
       </div>
@@ -64,7 +59,7 @@
     let lastPage = 1;
     let trnum = 0;
     const maxRows = pagination.limit;
-    let totalRows = $("table tbody tr").length;
+    // let totalRows = $("table tbody tr").length;
 
     // show only 5 pages if number of page > 10
     var limitPaging = function() {
@@ -100,19 +95,33 @@
     });
 
     // show number of pages at the pagination
-    if (totalRows > maxRows) {
-      let pagenum = Math.ceil(totalRows / maxRows);
-      for (let i = 1; i <= pagenum; i++) { // sr-only: hide information intended only for screen readers
-        $(".pagination #prev").before(`
-          <li data-page="${i}">
-            <span>${i}<span class="sr-only">(current)</span></span> 
+    let paginationNum = function() {
+      if ($("table tbody tr").length > maxRows) {
+        let pagenum = Math.ceil($("table tbody tr").length / maxRows);
+        console.log(pagenum);
+        $(".pagination").empty().append(`
+          <li data-page="prev">
+            <span> < <span class="sr-only">(current)</span></span>
           </li>
-        `).show();
+          <li data-page="next" id="prev">
+            <span> > <span class="sr-only">(current)</span></span>
+          </li>
+        `);
+        for (let i = 1; i <= pagenum; i++) { // sr-only: hide information intended only for screen readers
+          $(".pagination #prev").before(`
+            <li data-page="${i}">
+              <span>${i}<span class="sr-only">(current)</span></span> 
+            </li>
+          `).show();
+        }
       }
     }
+    
+    paginationNum();
 
     $('.pagination [data-page="1"]').addClass('active'); // starting page is 1
     $('.pagination').on('click', 'li', function(e) {
+      paginationNum();
       e.stopImmediatePropagation(); // stoppropagationimmediate: prevent every event from running, stoppropagation: only prevent parents event
       e.preventDefault(); 
       let pageNum = $(this).attr('data-page');
