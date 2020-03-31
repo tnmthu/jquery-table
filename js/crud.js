@@ -157,7 +157,6 @@ $(document).ready(function() {
           <td class="employee_salary">${sal.toLocaleString("en")}</td>
         </tr>
       `);
-      $("#emp_id, #emp_name, #emp_age, #emp_salary").val(""); // empty out inputs
     }
   });
 
