@@ -95,10 +95,9 @@
     });
 
     // show number of pages at the pagination
-    let paginationNum = function() {
+    let paginationNum = function(current) {
       if ($("table tbody tr").length > maxRows) {
         let pagenum = Math.ceil($("table tbody tr").length / maxRows);
-        console.log(pagenum);
         $(".pagination").empty().append(`
           <li data-page="prev">
             <span> < <span class="sr-only">(current)</span></span>
@@ -109,7 +108,7 @@
         `);
         for (let i = 1; i <= pagenum; i++) { // sr-only: hide information intended only for screen readers
           $(".pagination #prev").before(`
-            <li data-page="${i}">
+            <li data-page="${i}" ${i == current ? 'class="active"' : ''}>
               <span>${i}<span class="sr-only">(current)</span></span> 
             </li>
           `).show();
@@ -117,11 +116,10 @@
       }
     }
     
-    paginationNum();
+    paginationNum(1);
 
     $('.pagination [data-page="1"]').addClass('active'); // starting page is 1
     $('.pagination').on('click', 'li', function(e) {
-      paginationNum();
       e.stopImmediatePropagation(); // stoppropagationimmediate: prevent every event from running, stoppropagation: only prevent parents event
       e.preventDefault(); 
       let pageNum = $(this).attr('data-page');
@@ -140,7 +138,7 @@
       }
       lastPage = pageNum;
       $('.pagination li').removeClass('active');
-      $(`.pagination [data-page=${lastPage}]`).addClass('active');
+      $(`.pagination [data-page=${pageNum}]`).addClass('active');
       limitPaging();
       // rowIndex for page
       let trIndex = 0;
@@ -152,6 +150,7 @@
           $(this).show();
         }
       });
+      paginationNum(pageNum);
     });
     limitPaging();
 
