@@ -245,7 +245,6 @@ $(document).ready(function() {
     $(`input:checkbox`).not(ignore).prop('checked', this.checked);
     if ($(this).is(":checked")) {
       $('tbody input:checkbox:checked').closest("td").addClass("selected");
-      $("#emp_id, #emp_name, #emp_age, #emp_salary").val("");
     } else {
       $('tbody input:checkbox').closest("td").removeClass("selected");
     }
