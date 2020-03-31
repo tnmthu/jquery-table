@@ -17,13 +17,13 @@ $(document).ready(function() {
       colName: "Age",
       dataName: "employee_age",
       type: "number",
-      width: "25%"
+      width: "15%"
     },
     {
       colName: "Salary",
       dataName: "employee_salary",
       type: "number",
-      width: "25%"
+      width: "35%"
     },
   ];
 
@@ -69,21 +69,22 @@ $(document).ready(function() {
     let rows = $("#test").find("table tbody tr");
     let ajaxReqs = [];
     for (let row of rows) {
+      // if row deleted and not includes those just got added
       if ($(row).hasClass("deleted") && !$(row).hasClass("added")) {
         const id = $(row).attr("id");
         ajaxReqs.push($.fn.delete(parseInt(id)));
-      } else if ($(row).hasClass("added")) {
+      } else if ($(row).hasClass("added")) { // row added or even can be edited
         let rowData = {
           id: $(row).attr("id"),
-          employee_name: $(row).find("td.employee_name").html(),
+          employee_name: $(row).find("td.employee_name").html().replace(/\s\s+/g, " "),
           employee_salary: $(row).find("td.employee_salary").html().replace(/,/g, ""),
           employee_age: $(row).find("td.employee_age").html()
         };
         ajaxReqs.push($.fn.create(rowData));
-      } else if ($(row).hasClass("edited")) {
+      } else if ($(row).hasClass("edited")) { // row just got edited
         let rowData = {
           id: $(row).attr("id"),
-          employee_name: $(row).find("td.employee_name").html(),
+          employee_name: $(row).find("td.employee_name").html().replace(/\s\s+/g, " "),
           employee_salary: $(row).find("td.employee_salary").html().replace(/,/g, ""),
           employee_age: $(row).find("td.employee_age").html()
         };
@@ -91,7 +92,7 @@ $(document).ready(function() {
       }
     }
 
-    $.when(...ajaxReqs).done(function(res) {
+    $.when(...ajaxReqs).done(function(result) {
       $.fn.retrieve(function(res) {
         $("#test").table({
           data: res,
@@ -108,7 +109,6 @@ $(document).ready(function() {
       alert("Error saving!");
     });
   })
-
 
   // UTILITIES
   $.fn.isInt = function(n) {
@@ -136,11 +136,12 @@ $(document).ready(function() {
     let sal = parseInt($("#emp_salary").val().trim());
     let age = parseInt($("#emp_age").val().trim());
 
+    // validating inputs
     if (name == "" || sal == "" || age == "") {
       alert("Please fill in properly.")
-    } else if ($.fn.includeEe(age) || $.fn.isFloat(parseInt(age)) || 20 > parseInt(age) || 65 < parseInt(age)) {
+    } else if ($.fn.includeEe(age) || $.fn.isFloat(age) || 20 > age || 65 < age) {
       alert("Age must be an integer, > 20, < 65.");
-    } else if (!$.fn.isMoney(parseInt(sal))) {
+    } else if (!$.fn.isMoney(sal)) {
       alert("Salary must be in money type. Eg. 1000000");
     } else if (!$.fn.isName(name)) {
       alert("Wrong name format.");
@@ -156,26 +157,27 @@ $(document).ready(function() {
           <td class="employee_salary">${sal.toLocaleString("en")}</td>
         </tr>
       `);
-      $("#emp_id, #emp_name, #emp_age, #emp_salary").val("");
-      $("#test").find("input:checkbox:checked").trigger('click');
+      $("#emp_id, #emp_name, #emp_age, #emp_salary").val(""); // empty out inputs
+      $("#test").find("input:checkbox:checked").trigger('click'); // uncheck row
     }
   });
 
   // BTN_DEL CLICKED
   $("#btn__del").click(function() {
     $("#test").find("tbody tr input[type='checkbox']:checked").each(function() {
-      $(this).trigger('click');
+      $(this).trigger('click'); // uncheck row
       $(this).closest("tr").addClass("deleted");
-      $(this).closest("tr").prop("disabled", true);
+      $(this).closest("tr").prop("disabled", true); // disable row
     });
   });
 
   // PASS TABLE DATA TO INPUT
   $('#test').on("click", "tbody input[type='checkbox']", function (e) {
     e.stopPropagation();
+    // only pass if only 1 row is checked
     if ($("#test").find($("tbody input:checkbox:checked")).length == 1) { 
-      $("#emp_id, #emp_name, #emp_age").prop("disabled", false);
-      const id = $("#test").find($("tbody input:checkbox:checked")).closest("tr").attr("id") || null;
+      $("#emp_id, #emp_name, #emp_age").prop("disabled", false); // allow inputs
+      const id = $("#test").find($("tbody input:checkbox:checked")).closest("tr").attr("id") || null; // null for editing newly added rows
       let emp_name = $("#test").find($("tbody input:checkbox:checked")).closest("tr").find("td.employee_name").html();
       let emp_age = $("#test").find($("tbody input:checkbox:checked")).closest("tr").find("td.employee_age").html();
       let emp_sal = $("#test").find($("tbody input:checkbox:checked")).closest("tr").find("td.employee_salary").html();
@@ -183,9 +185,10 @@ $(document).ready(function() {
       $("#emp_id").val(id);
       $("#emp_name").val(emp_name);
       $("#emp_age").val(emp_age);
-      $("#emp_salary").val(emp_sal.replace(/,/g, ""));
+      $("#emp_salary").val(emp_sal.replace(/,/g, "")); // remove money format
       
     } else if ($("#test").find($("tbody input:checkbox:checked")).length > 1) {
+      //
       $("#emp_id, #emp_name, #emp_age, #emp_salary").val("");
       $("#emp_id, #emp_name, #emp_age").prop("disabled", true);
     } else {
@@ -197,9 +200,9 @@ $(document).ready(function() {
   // BTN_EDIT CLICKED
   $("#btn__edit").on("click", function() {
     let tr = $("#test").find($("tbody input:checkbox:checked")).closest("tr");
-    if ($("tbody input:checkbox:checked").length > 1) {
+    if ($("tbody input:checkbox:checked").length > 1) { // if select multiple rows->edit salary only
       if ($(tr).attr("changed")) {
-        sal = $("#emp_salary").val().trim();
+        let sal = $("#emp_salary").val().trim();
         if (!$.fn.isMoney(parseInt(sal))) {
           alert("Salary must be in money type. Eg. 1000000");
         } else {
@@ -213,12 +216,13 @@ $(document).ready(function() {
         }
         return;
       }
-    } else {
+    } else { // only 1 row selected
       if ($(tr).attr("changed")) {  
         let name = $("#emp_name").val().trim();
         let age = $("#emp_age").val().trim();
         let sal = $("#emp_salary").val().trim();
   
+        // validating inputs
         if ($.fn.isFloat(parseInt(age)) || 20 > parseInt(age) || 65 < parseInt(age)) {
           alert("Age must be an integer, > 20, < 65.");
         } else if (!$.fn.isMoney(parseInt(sal))) {
@@ -239,14 +243,16 @@ $(document).ready(function() {
       } 
     }
   });
-
+  // add flag for input change
   $("input").on("change paste keyup", function() {
     $("#test").find($("tbody input:checkbox:checked")).closest("tr").attr("changed", "1");
   });
 
   // SELECT ALL
   $("#test").on("click", "#select_all", function() {
+    // ignore header checkbox and deleted rows
     let ignore = $("#test").find("tbody tr.deleted input:checkbox, input:checkbox:eq(0)") || null;
+    // check all checkboxes
     $(`input:checkbox`).not(ignore).prop('checked', this.checked);
     if ($(this).is(":checked")) {
       $('tbody input:checkbox:checked').closest('tr').addClass("selected");
@@ -266,13 +272,14 @@ $(document).ready(function() {
 
   $('#test').on("click", "tbody input[type='checkbox']", function (e) {
     e.stopPropagation();
-    if ($(this).is(":checked")) { //If the checkbox is checked
+    if ($(this).is(":checked")) { // if the checkbox is checked
         $(this).closest('tr').addClass("selected"); 
-        //Add class on checkbox checked
+        // add class on checkbox checked
     } else {
         $(this).closest('tr').removeClass("selected");
-        //Remove class on checkbox uncheck
+        // remove class on checkbox uncheck
     }
+    // if not all rows checked -> remove check all
     if ($("tbody input:checkbox:checked").length != $("tbody input:checkbox").length) {
       $("#select_all").prop('checked', false);
     } else {
