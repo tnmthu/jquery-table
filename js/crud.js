@@ -172,80 +172,67 @@ $(document).ready(function() {
   });
 
   // PASS TABLE DATA TO INPUT
-  $('#test').on("click", "tbody input[type='checkbox']", function (e) {
-    e.stopPropagation();
-    // only pass if only 1 row is checked
-    if ($("#test").find($("tbody input:checkbox:checked")).length == 1) { 
+  $("#test").on("click", "tbody tr", function() {
+    // clicked flag
+    if ($(this).attr("clicked")) {
+      $(this).removeAttr("clicked");
+      $(this).removeClass("selected");
+    } else {
+      $(this).attr("clicked", 1);
+      $(this).siblings().removeAttr("clicked");
+      $(this).addClass("selected");
+    }
+
+    if ($("#test").find("tbody tr[clicked=1]").length == 1) {
+      let tr = $("#test").find("tbody tr[clicked=1]");
       $("#emp_id, #emp_name, #emp_age").prop("disabled", false); // allow inputs
-      const id = $("#test").find($("tbody input:checkbox:checked")).closest("tr").attr("id") || null; // null for editing newly added rows
-      let emp_name = $("#test").find($("tbody input:checkbox:checked")).closest("tr").find("td.employee_name").html();
-      let emp_age = $("#test").find($("tbody input:checkbox:checked")).closest("tr").find("td.employee_age").html();
-      let emp_sal = $("#test").find($("tbody input:checkbox:checked")).closest("tr").find("td.employee_salary").html();
+      const id = tr.attr("id") || null; // null for editing newly added rows
+      let emp_name = tr.find("td.employee_name").html();
+      let emp_age = tr.find("td.employee_age").html();
+      let emp_sal = tr.find("td.employee_salary").html();
 
       $("#emp_id").val(id);
       $("#emp_name").val(emp_name);
       $("#emp_age").val(emp_age);
-      $("#emp_salary").val(emp_sal.replace(/,/g, "")); // remove money format
-      
-    } else if ($("#test").find($("tbody input:checkbox:checked")).length > 1) {
-      // more than 1 row are checked -> can edit only salary
-      $("#emp_id, #emp_name, #emp_age, #emp_salary").val("");
-      $("#emp_id, #emp_name, #emp_age").prop("disabled", true);
-    } else { // none is checked -> inputs free
-      $("#emp_id, #emp_name, #emp_age").prop("disabled", false);
+      $("#emp_salary").val(emp_sal.replace(/,/g, "") || null); // remove money format
+    } else {
+      $("#emp_id, #emp_name, #emp_age, #emp_salary").prop("disabled", false);
       $("#emp_id, #emp_name, #emp_age, #emp_salary").val("");
     }
   });
 
   // BTN_EDIT CLICKED
   $("#btn__edit").on("click", function() {
-    let tr = $("#test").find($("tbody input:checkbox:checked")).closest("tr");
-    if ($("tbody input:checkbox:checked").length > 1) { // if select multiple rows->edit salary only
-      if ($(tr).attr("changed")) {
-        let sal = $("#emp_salary").val().trim();
-        if (!$.fn.isMoney(parseInt(sal))) {
-          alert("Salary must be in money type. Eg. 1000000");
-        } else {
-          tr.each(function() {
-            $(this).find("td.employee_salary").html(parseInt(sal).toLocaleString("en"));
-            $("#emp_id, #emp_name, #emp_age, #emp_salary").val("");
-            $("#test").find("input:checkbox:checked").trigger('click');
-            $(this).addClass("edited");
-            $(this).removeAttr("changed");  
-          });
-        }
-        return;
-      }
-    } else { // only 1 row selected
-      if ($(tr).attr("changed")) {  
-        let name = $("#emp_name").val().trim();
-        let age = $("#emp_age").val().trim();
-        let sal = $("#emp_salary").val().trim();
-  
-        // validating inputs
-        if ($.fn.isFloat(parseInt(age)) || 20 > parseInt(age) || 65 < parseInt(age)) {
-          alert("Age must be an integer, > 20, < 65.");
-        } else if (!$.fn.isMoney(parseInt(sal))) {
-          alert("Salary must be in money type. Eg. 1000000");
-        } else if (!$.fn.isName(name)) {
-          alert("Wrong name format.");
-        } else {
-          $(tr).find("td.employee_name").html(name);
-          $(tr).find("td.employee_age").html(age);
-          $(tr).find("td.employee_salary").html(parseInt(sal).toLocaleString("en"));
-        
-          $(tr).addClass("edited");
-          $(tr).removeAttr("changed");
+    let tr = $("#test").find($("tbody tr[clicked=1]"));
+    // only 1 row selected
+    if ($(tr).attr("changed")) {  
+      let name = $("#emp_name").val().trim();
+      let age = $("#emp_age").val().trim();
+      let sal = $("#emp_salary").val().trim();
 
-          $("#emp_id, #emp_name, #emp_age, #emp_salary").val("");
-          $("#test").find("input:checkbox:checked").trigger('click');
-        }
-      } 
-    }
+      // validating inputs
+      if ($.fn.isFloat(parseInt(age)) || 20 > parseInt(age) || 65 < parseInt(age)) {
+        alert("Age must be an integer, > 20, < 65.");
+      } else if (!$.fn.isMoney(parseInt(sal))) {
+        alert("Salary must be in money type. Eg. 1000000");
+      } else if (!$.fn.isName(name)) {
+        alert("Wrong name format.");
+      } else {
+        $(tr).find("td.employee_name").html(name);
+        $(tr).find("td.employee_age").html(age);
+        $(tr).find("td.employee_salary").html(parseInt(sal).toLocaleString("en"));
+      
+        $(tr).addClass("edited");
+        $(tr).removeClass("selected");
+        $(tr).removeAttr("changed, clicked");
+
+        $("#emp_id, #emp_name, #emp_age, #emp_salary").val("");
+      }
+    } 
   });
   // add flag for input change
   $("input").on("change paste keyup", function() {
-    $("#test").find($("tbody input:checkbox:checked")).closest("tr").attr("changed", "1");
+    $("#test").find($("tbody tr[clicked=1]")).attr("changed", "1");
   });
 
   // SELECT ALL
@@ -257,7 +244,7 @@ $(document).ready(function() {
     if ($(this).is(":checked")) {
       $('tbody input:checkbox:checked').closest('tr').addClass("selected");
       $("#emp_id, #emp_name, #emp_age, #emp_salary").val("");
-      $("#emp_id, #emp_name, #emp_age").prop("disabled", true);
+      $("#emp_id, #emp_name, #emp_age, #emp_salary").prop("disabled", true);
     } else {
       $("#emp_id, #emp_name, #emp_age").prop("disabled", false);
       $('tbody input:checkbox').closest('tr').removeClass("selected");
