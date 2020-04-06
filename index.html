@@ -18,39 +18,53 @@
   <script src="./js/crud.js"></script>
 </head>
 <body>
+  <div id="loading">
+    <!-- <img src="./loading.gif" />   -->
+  </div>
   <div class="myContainer">
-    <div id="test"></div>
+    <div id="test">
+    </div>
 
     <div class="right">
       <div class="upper">
         <button id="btn__add" class="btn">Add</button>
-        <button id="btn__edit" class="btn">Edit</button>
+        <!-- <button id="btn__edit" class="btn">Edit</button> -->
         <button id="btn__del" class="btn">Delete</button>
         <button id="btn__save" class="btn">Save</button>
       </div>
       <form id="myForm">
         <label for="emp_id" class="label">Id:</label><br>
-        <input readonly id="emp_id" name="emp_id"><br>
+        <div class="input_container">
+          <input readonly id="emp_id" name="emp_id" disabled><br>
+        </div>
 
         <label for="emp_name" class="label">Employee Name:</label><br>
-        <input id="emp_name" name="emp_name" type="text" required><br>
+        <div class="input_container">
+          <input id="emp_name" name="emp_name" type="text" required><br>
+          <p class="msg" id="emp_name_msg"></p>
+        </div>
 
         <label for="emp_age" class="label">Age:</label><br>
-        <input id="emp_age" name="emp_age" type="number" onkeydown="return event.keyCode !== 69 && event.keyCode !== 101 && event.keyCode !== 45 && event.keyCode !== 43" required><br>
+        <div class="input_container">
+          <input id="emp_age" name="emp_age" type="number" onkeydown="return event.keyCode !== 69 && event.keyCode !== 101 && event.keyCode !== 45 && event.keyCode !== 43" required><br>
+          <p class="msg" id="emp_age_msg"></p>
+        </div>
 
         <label for="emp_salary" class="label">Salary:</label><br>
-        <input id="emp_salary" name="emp_salary" type="number" onkeydown="return event.keyCode !== 69 && event.keyCode !== 101 && event.keyCode !== 45 && event.keyCode !== 43" required><br>
-
+        <div class="input_container">
+          <input id="emp_salary" name="emp_salary" type="number" onkeydown="return event.keyCode !== 69 && event.keyCode !== 101 && event.keyCode !== 45 && event.keyCode !== 43" required><br>
+          <p class="msg" id="emp_salary_msg"></p>
+        </div>
+        
       </form>
     </div>
-    
   </div>
   <script>
     $(document).ready(function() {
       $.fn.retrieve(function(data) {
         $("#test").table({
           data: data,
-          width: "600px",
+          width: "50vw",
           columns: [
             {
               colName: "Id",
@@ -84,6 +98,11 @@
           sort: true
         });
       });
+    });
+    $(document).ajaxStart(function() {
+      $("#loading").show();
+    }).ajaxStop(function() {
+      $("#loading").hide();
     });
   </script>
 </body>

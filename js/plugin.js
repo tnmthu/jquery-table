@@ -23,7 +23,10 @@
     $(this).append(`
       <table style="width: ${stripQuotes(width)}">
         <thead>
-          <th><input type="checkbox" id="select_all" value="select_all"></th>
+          <th>
+            <input class="checkbox" type="checkbox" id="select_all" value="select_all">
+            <label for="select_all"></label>
+          </th>
           ${headers.map(function(item, index) {
             return `<th data-idx="${index}" style="width: ${stripQuotes(widths[index])};">${item}</th>`
           }).join("")}
@@ -33,7 +36,8 @@
             return `
             <tr id="${item["id"]}">
               <td>
-                <input type="checkbox" id="select_${item["id"]}">
+                <input class="checkbox" type="checkbox" id="select_${item["id"]}">
+                <label for="select_${item["id"]}"></label>
               </td>
               ${dataNames.map(function(elem, index) {
                 return (type[index] === "number") ? 

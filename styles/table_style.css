@@ -5,14 +5,11 @@ table {
   color: #000;
 }
 thead {
-  color: #000;
-  background-color: #bbb2fc;
+  color: #fff;
+  background-color: #004e8c;
 }
 thead th input {
   width: fit-content;
-}
-tr {
-  /* cursor: pointer; */
 }
 th, td {
   padding: 10px;
@@ -27,11 +24,41 @@ th {
 .pagination > .active > span,
 .pagination > .active > span, .pagination > .active > span:hover 
 {
-  background-color: #bbb2fc;
-  border-color: #bbb2fc;
+  background-color: #cbd1d6;
+  border-color: #cbd1d6;
   color: #000;
 }
 .pagination>li>span {
   color: #000;
   cursor: pointer;
+}
+
+.checkbox {
+  position: absolute;
+  opacity: 0;
+}
+.checkbox + label {
+  position: relative;
+  cursor: pointer;
+}
+.checkbox + label:before {
+  content: "";
+  display: inline-block;
+  vertical-align: middle;
+  width: 15px;
+  height: 15px;
+  border: 1px solid #cecece;
+  background-color: #fff;
+}
+.checkbox:checked + label:after {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: 8px;
+  background: #004e8c;
+  width: 2px;
+  height: 2px;
+  box-shadow: 2px 0 0 #004e8c, 4px 0 0 #004e8c, 4px -2px 0 #004e8c, 4px -4px 0 #004e8c, 4px -6px 0 #004e8c, 4px -7px 0 #004e8c;
+  transform: rotate(45deg);
+  vertical-align: middle;
 }

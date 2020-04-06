@@ -93,10 +93,11 @@ $(document).ready(function() {
     }
 
     $.when(...ajaxReqs).done(function(result) {
+      alert("Save done!")
       $.fn.retrieve(function(res) {
         $("#test").table({
           data: res,
-          width: "570px",
+          width: "50vw",
           columns: columns,
           pagination: {
             limit: 10
@@ -118,7 +119,7 @@ $(document).ready(function() {
     return Number(n) === n && n % 1 !== 0;
   }
   $.fn.isMoney = function(n) {
-    let regex = /^[0-9]{1,3}([0-9]{3})+$/;
+    let regex = /^[0-9]{1,3}([0-9]{3})*$/;
     return (regex.test(n)) ? true : false;
   }
   $.fn.isName = function(s) {
@@ -131,6 +132,7 @@ $(document).ready(function() {
   }
 
   // BTN_ADD CLICKED
+  let cnt = 0;
   $("#btn__add").click(function() {
     let name = $("#emp_name").val().trim();
     let sal = parseInt($("#emp_salary").val().trim());
@@ -138,18 +140,24 @@ $(document).ready(function() {
 
     // validating inputs
     if (name == "" || sal == "" || age == "") {
-      alert("Please fill in properly.")
+      $(".msg").html("Please fill in properly.");
     } else if ($.fn.includeEe(age) || $.fn.isFloat(age) || 20 > age || 65 < age) {
-      alert("Age must be an integer, > 20, < 65.");
+      $("#emp_age").css("border-color", "red");
+      $("#emp_age_msg").html("Age must be an integer, > 20, < 65.");
     } else if (!$.fn.isMoney(sal)) {
-      alert("Salary must be in money type. Eg. 1000000");
+      $("#emp_salary").css("border-color", "red");
+      $("#emp_salary_msg").html("Salary must be in money type. Eg. 1000000");
     } else if (!$.fn.isName(name)) {
-      alert("Wrong name format.");
+      $("#emp_name").css("border-color", "red");
+      $("#emp_name_msg").html("Wrong name format.");
     } else {
+      $("#emp_name, #emp_age, #emp_salary").css("border-color", "#979797");
+      $("#emp_name_msg, #emp_age_msg, #emp_salary").html("");
       $("#test").find("table tbody").prepend(`
         <tr class="added">
           <td>
-            <input type="checkbox">
+            <input class="checkbox" type="checkbox" id="select_${cnt}">
+            <label for="select_${cnt}"></label>
           </td>
           <td class="id"></td>
           <td class="employee_name">${name}</td>
@@ -157,6 +165,7 @@ $(document).ready(function() {
           <td class="employee_salary">${sal.toLocaleString("en")}</td>
         </tr>
       `);
+      cnt++;
     }
   });
 
@@ -176,12 +185,12 @@ $(document).ready(function() {
     // clicked flag
     if ($(this).closest("tr").attr("clicked")) {
       $(this).closest("tr").removeAttr("clicked");
-      $(this).closest("tr").find("td:gt(0)").removeClass("selected");
+      $(this).closest("tr").removeClass("selected");
     } else {
       $(this).closest("tr").attr("clicked", 1);
       $(this).closest("tr").siblings().removeAttr("clicked");
-      $(this).closest("tr").siblings().find("td:not(:first-child)").removeClass("selected");
-      $(this).closest("tr").find("td:not(:first-child)").addClass("selected");
+      $(this).closest("tr").siblings().removeClass("selected");
+      $(this).closest("tr").addClass("selected");
     }
 
     if ($("#test").find("tbody tr[clicked=1]").length == 1) {
@@ -203,7 +212,9 @@ $(document).ready(function() {
   });
 
   // BTN_EDIT CLICKED
-  $("#btn__edit").on("click", function() {
+  // $("#btn__edit").on("click", function() {
+  $("input").on("input", function() {
+    $("#test").find($("tbody tr[clicked=1]")).attr("changed", "1");
     let tr = $("#test").find($("tbody tr[clicked=1]"));
     // only 1 row selected
     if ($(tr).attr("changed")) {  
@@ -213,28 +224,30 @@ $(document).ready(function() {
 
       // validating inputs
       if ($.fn.isFloat(parseInt(age)) || 20 > parseInt(age) || 65 < parseInt(age)) {
-        alert("Age must be an integer, > 20, < 65.");
+        $("#emp_age").css("border-color", "red");
+        $("#emp_age_msg").html("Age must be an integer, > 20, < 65.");
       } else if (!$.fn.isMoney(parseInt(sal))) {
-        alert("Salary must be in money type. Eg. 1000000");
+        $("#emp_salary").css("border-color", "red");
+        $("#emp_salary_msg").html("Salary must be in money type. Eg. 1000000");
       } else if (!$.fn.isName(name)) {
-        alert("Wrong name format.");
+        $("#emp_name").css("border-color", "red");
+        $("#emp_name_msg").html("Wrong name format.");
       } else {
+        $("#emp_name, #emp_age, #emp_salary").css("border-color", "#979797");
+        $(".msg").html("");
+
         $(tr).find("td.employee_name").html(name);
         $(tr).find("td.employee_age").html(age);
         $(tr).find("td.employee_salary").html(parseInt(sal).toLocaleString("en"));
       
         $(tr).addClass("edited");
-        $(tr).find("td:gt(0)").removeClass("selected");
-        $(tr).removeAttr("changed, clicked");
-
-        $("#emp_id, #emp_name, #emp_age, #emp_salary").val("");
       }
     } 
   });
   // add flag for input change
-  $("input").on("change paste keyup", function() {
-    $("#test").find($("tbody tr[clicked=1]")).attr("changed", "1");
-  });
+  // $("input").on("change paste keyup", function() {
+  //   $("#test").find($("tbody tr[clicked=1]")).attr("changed", "1");
+  // });
 
   // SELECT ALL
   $("#test").on("click", "#select_all", function() {
@@ -243,9 +256,9 @@ $(document).ready(function() {
     // check all checkboxes
     $(`input:checkbox`).not(ignore).prop('checked', this.checked);
     if ($(this).is(":checked")) {
-      $('tbody input:checkbox:checked').closest("td").addClass("selected");
+      $('tbody input:checkbox:checked').closest("tr").addClass("selected");
     } else {
-      $('tbody input:checkbox').closest("td").removeClass("selected");
+      $('tbody input:checkbox').closest("tr").removeClass("selected");
     }
   });
 
@@ -257,10 +270,10 @@ $(document).ready(function() {
   $('#test').on("click", "tbody input[type='checkbox']", function (e) {
     e.stopPropagation();
     if ($(this).is(":checked")) { // if the checkbox is checked
-        $(this).closest('td').addClass("selected"); 
+        $(this).closest('tr').addClass("selected"); 
         // add class on checkbox checked
     } else {
-        $(this).closest('td').removeClass("selected");
+        $(this).closest('tr').removeClass("selected");
         // remove class on checkbox uncheck
     }
     // if not all rows checked -> remove check all
