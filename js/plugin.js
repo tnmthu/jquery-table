@@ -20,6 +20,7 @@
 
     $(this).empty();
     // đổ data 
+    // style="max-width: ${stripQuotes(widths[index])};"
     $(this).append(`
       <table style="width: ${stripQuotes(width)}">
         <thead>
@@ -28,7 +29,14 @@
             <label for="select_all"></label>
           </th>
           ${headers.map(function(item, index) {
-            return `<th data-idx="${index}" style="width: ${stripQuotes(widths[index])};">${item}</th>`
+            return `
+            <th data-idx="${index}" >
+              <div>${item}</div>
+              <div class="sort_icon">
+                <i class="arr__up fas fa-angle-up fa-xs"></i>
+                <i class="arr__down fas fa-angle-down fa-xs"></i>
+              </div>
+            </th>`
           }).join("")}
         </thead>
         <tbody>
@@ -158,6 +166,21 @@
     });
     limitPaging();
 
+    // SORT UTILITIES
+    let toggleArrow = function(e) {
+      let up = $(e).find(".arr__up");
+      let down = $(e).find(".arr__down");
+      if (up.hasClass("blur")) {
+        up.removeClass("blur");
+        down.addClass("blur");
+        return;
+      }
+      if (down.hasClass("blur")) {
+        down.removeClass("blur");
+        up.addClass("blur");
+        return;
+      }
+    }
     // SORT
     if (sort) {
       $(this).find("thead").on("click", "th:gt(0)", function() { // minus the check all header
@@ -165,12 +188,15 @@
         let rows = $(this).closest("table").find("tbody tr");
         let asc = $(this).attr("data-asc");
         $(this).siblings().removeAttr("data-asc"); // reset for other headers
+        $(this).siblings().find(".arr__up, .arr__down").removeClass("blur");
   
         if ($(this).children("input:checkbox").length) { // no sort for select_all header
           return;
         }
+
         if (typeof asc === typeof undefined || asc === false) { // if current header is reset
           $(this).attr("data-asc", 1);
+          $(this).find(".arr__down").addClass("blur");
           trnum = 0;
           // sort ascending
           rows.sort(function(a, b) {
@@ -187,6 +213,7 @@
           // sort descending when header is not reset
           trnum = 0;
           $(rows.get().reverse()).appendTo("tbody");
+          toggleArrow(this);
         }
   
         // get according rows for each page 

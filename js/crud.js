@@ -92,6 +92,10 @@ $(document).ready(function() {
       }
     }
 
+    if (ajaxReqs.length == 0) {
+      return;
+    }
+
     $.when(...ajaxReqs).done(function(result) {
       alert("Save done!")
       $.fn.retrieve(function(res) {
@@ -120,15 +124,27 @@ $(document).ready(function() {
   }
   $.fn.isMoney = function(n) {
     let regex = /^[0-9]{1,3}([0-9]{3})*$/;
-    return (regex.test(n)) ? true : false;
+    return regex.test(n);
+  }
+  $.fn.removeAscent = function(str) {
+    if (str === null || str === undefined) return str;
+    str = str.toLowerCase();
+    str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
+    str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
+    str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
+    str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
+    str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
+    str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
+    str = str.replace(/đ/g, "d");
+    return str;
   }
   $.fn.isName = function(s) {
     let regex = /^[a-zA-Z ]+$/;
-    return (regex.test(s)) ? true : false;
+    return regex.test($.fn.removeAscent(s));
   }
   $.fn.includeEe = function(s) {
     let regex = /[eE+-]/g;
-    return (regex.test(s)) ? true : false;
+    return regex.test(s);
   }
 
   // BTN_ADD CLICKED
