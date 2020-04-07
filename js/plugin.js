@@ -30,7 +30,7 @@
           </th>
           ${headers.map(function(item, index) {
             return `
-            <th data-idx="${index}" >
+            <th data-idx="${index}" style="width: ${stripQuotes(widths[index])};">
               <div>${item}</div>
               <div class="sort_icon">
                 <i class="arr__up fas fa-angle-up fa-xs"></i>
