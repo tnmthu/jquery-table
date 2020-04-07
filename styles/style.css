@@ -21,7 +21,7 @@ body {
   font-weight: bold;
   color: #fff;
 }
-.btn:hover {
+.btn:hover, .btn:focus {
   color: #fff;
 }
 #btn__add {

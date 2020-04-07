@@ -60,6 +60,7 @@ th {
   width: 15px;
   height: 15px;
   border: 1px solid #cecece;
+  border-radius: 2px;
   background-color: #fff;
 }
 .checkbox:checked + label:after {

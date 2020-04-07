@@ -275,7 +275,8 @@ $(document).ready(function() {
     if ($(this).is(":checked")) {
       $('tbody input:checkbox:checked').closest("tr").addClass("selected");
     } else {
-      $('tbody input:checkbox').closest("tr").removeClass("selected");
+      let clicked = $("tbody tr").filter('[clicked=1]'); // leave the clicked aloneee
+      $('tbody input:checkbox').closest("tr").not(clicked).removeClass("selected");
     }
   });
 
