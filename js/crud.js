@@ -147,21 +147,23 @@ $(document).ready(function() {
     return regex.test(s);
   }
   $.fn.validated = function(name, sal, age) {
-    console.log(age);
+    let isValid = true;
     if (name === "" || !$.fn.isName(name)) {
       $("#emp_name").css("border-color", "red");
       $("#emp_name_msg").html("Wrong name format.");
-      return false;
-    } else if (sal === "" || !$.fn.isMoney(sal)) {
+      isValid = false;
+    } 
+    if (sal === "" || !$.fn.isMoney(sal)) {
       $("#emp_salary").css("border-color", "red");
       $("#emp_salary_msg").html("Salary must be in money type. Eg. 1000000");
-      return false;
-    } else if (age === "" || $.fn.includeEe(age) || $.fn.isFloat(age) || 20 > age || 65 < age) {
+      isValid = false;
+    } 
+    if (age === "" || $.fn.includeEe(age) || $.fn.isFloat(age) || 20 > age || 65 < age) {
       $("#emp_age").css("border-color", "red");
       $("#emp_age_msg").html("Age must be an integer, > 20, < 65.");
-      return false;
+      isValid = false;
     }
-    return true;
+    return isValid;
   }
 
   // BTN_ADD CLICKED
@@ -175,7 +177,7 @@ $(document).ready(function() {
       return;
     } else {
       $("#emp_name, #emp_age, #emp_salary").css("border-color", "#979797");
-      $("#emp_name_msg, #emp_age_msg, #emp_salary").html("");
+      $("#emp_name_msg, #emp_age_msg, #emp_salary_msg").html("");
       $("#test").find("table tbody").prepend(`
         <tr class="added">
           <td>
