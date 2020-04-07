@@ -6,7 +6,7 @@ table {
 }
 thead {
   color: #fff;
-  background-color: #004e8c;
+  background-color: #265B86;
 }
 thead th input {
   width: fit-content;
@@ -68,10 +68,10 @@ th {
   position: absolute;
   left: 3px;
   top: 8px;
-  background: #004e8c;
+  background: #265B86;
   width: 2px;
   height: 2px;
-  box-shadow: 2px 0 0 #004e8c, 4px 0 0 #004e8c, 4px -2px 0 #004e8c, 4px -4px 0 #004e8c, 4px -6px 0 #004e8c, 4px -7px 0 #004e8c;
+  box-shadow: 2px 0 0 #265B86, 4px 0 0 #265B86, 4px -2px 0 #265B86, 4px -4px 0 #265B86, 4px -6px 0 #265B86, 4px -7px 0 #265B86;
   transform: rotate(45deg);
   vertical-align: middle;
 }

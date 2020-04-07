@@ -157,6 +157,7 @@ $(document).ready(function() {
 
     // validating inputs
     if (name == "" || sal == "" || age == "") {
+      $("#emp_age, #emp_name, #emp_salary").css("border-color", "red");
       $(".msg").html("Please fill in properly.");
     } else if ($.fn.includeEe(age) || $.fn.isFloat(age) || 20 > age || 65 < age) {
       $("#emp_age").css("border-color", "red");
@@ -190,10 +191,10 @@ $(document).ready(function() {
   $("#btn__del").click(function() {
     $("#test").find("tbody tr input[type='checkbox']:checked").each(function() {
       $(this).trigger('click'); // uncheck row
-      $(this).closest("tr").find("td:gt(0)").removeClass("selected");
-      $(this).closest("tr").addClass("deleted");
       $(this).attr("disabled", true); // disable checkbox
+      $(this).closest("tr").removeClass("selected").removeAttr("clicked").addClass("deleted");
       $(this).closest("tr").find("td").prop("disabled", true); // disable row
+      $("#emp_id, #emp_name, #emp_age, #emp_salary").val("");
     });
   });
 
