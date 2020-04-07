@@ -200,15 +200,18 @@ $(document).ready(function() {
   // PASS TABLE DATA TO INPUT
   $("#test").on("click", "tbody tr td:not(:first-child)", function() {
     // clicked flag
-    if ($(this).closest("tr").attr("clicked")) {
-      $(this).closest("tr").removeAttr("clicked");
-      $(this).closest("tr").removeClass("selected");
-      $(this).closest("tr").find("input[type='checkbox']").prop("checked", false);
-    } else {
+    if ($(this).closest("tr").attr("clicked")) { // if is being selected -> unselect
+      if ($(this).closest("tr").find("input[type='checkbox']:checked").length > 0) { // if checkbox is checked -> keep selected but not on form
+        $(this).closest("tr").removeAttr("clicked");
+      } else { // else: remove selected and clicked 
+        $(this).closest("tr").removeAttr("clicked");
+        $(this).closest("tr").removeClass("selected");
+      }
+    } else { // other rows are unselected, except the ones with checked checkboxes
+      let checked = $("tbody tr").filter(':has(:checkbox:checked)');
       $(this).closest("tr").attr("clicked", 1);
       $(this).closest("tr").siblings().removeAttr("clicked");
-      $(this).closest("tr").siblings().removeClass("selected");
-      $(this).closest("tr").siblings().find("input[type='checkbox']").prop("checked", false);
+      $(this).closest("tr").siblings().not(checked).removeClass("selected");
       $(this).closest("tr").addClass("selected");
     }
 
