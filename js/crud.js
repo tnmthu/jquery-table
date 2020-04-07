@@ -287,11 +287,11 @@ $(document).ready(function() {
   $('#test').on("click", "tbody input[type='checkbox']", function (e) {
     e.stopPropagation();
     if ($(this).is(":checked")) { // if the checkbox is checked
-        $(this).closest('tr').addClass("selected"); 
-        // add class on checkbox checked
+      $(this).closest('tr').addClass("selected"); // add class on checkbox checked
     } else {
-        $(this).closest('tr').removeClass("selected");
-        // remove class on checkbox uncheck
+      if (!$(this).closest('tr').attr("clicked")) { // if not currently clicked for form
+        $(this).closest('tr').removeClass("selected"); // remove class on checkbox uncheck
+      }
     }
     // if not all rows checked -> remove check all
     if ($("tbody input:checkbox:checked").length != $("tbody input:checkbox").length) {
