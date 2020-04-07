@@ -66,6 +66,7 @@ $(document).ready(function() {
 
   // SAVE ALL 
   $("#btn__save").on("click", function() {
+    $("#emp_id, #emp_name, #emp_age, #emp_salary").val("");
     let rows = $("#test").find("table tbody tr");
     let ajaxReqs = [];
     for (let row of rows) {
@@ -97,7 +98,7 @@ $(document).ready(function() {
     }
 
     $.when(...ajaxReqs).done(function(result) {
-      alert("Save done!")
+      alert("Save done!");
       $.fn.retrieve(function(res) {
         $("#test").table({
           data: res,
@@ -202,10 +203,12 @@ $(document).ready(function() {
     if ($(this).closest("tr").attr("clicked")) {
       $(this).closest("tr").removeAttr("clicked");
       $(this).closest("tr").removeClass("selected");
+      $(this).closest("tr").find("input[type='checkbox']").prop("checked", false);
     } else {
       $(this).closest("tr").attr("clicked", 1);
       $(this).closest("tr").siblings().removeAttr("clicked");
       $(this).closest("tr").siblings().removeClass("selected");
+      $(this).closest("tr").siblings().find("input[type='checkbox']").prop("checked", false);
       $(this).closest("tr").addClass("selected");
     }
 
@@ -227,8 +230,7 @@ $(document).ready(function() {
     }
   });
 
-  // BTN_EDIT CLICKED
-  // $("#btn__edit").on("click", function() {
+  // EDITED
   $("input").on("input", function() {
     $("#test").find($("tbody tr[clicked=1]")).attr("changed", "1");
     let tr = $("#test").find($("tbody tr[clicked=1]"));
@@ -260,10 +262,6 @@ $(document).ready(function() {
       }
     } 
   });
-  // add flag for input change
-  // $("input").on("change paste keyup", function() {
-  //   $("#test").find($("tbody tr[clicked=1]")).attr("changed", "1");
-  // });
 
   // SELECT ALL
   $("#test").on("click", "#select_all", function() {
