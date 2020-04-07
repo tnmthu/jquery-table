@@ -20,7 +20,6 @@
 
     $(this).empty();
     // đổ data 
-    // style="max-width: ${stripQuotes(widths[index])};"
     $(this).append(`
       <table style="width: ${stripQuotes(width)}">
         <thead>

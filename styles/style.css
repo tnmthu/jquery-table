@@ -25,7 +25,7 @@ body {
   color: #fff;
 }
 #btn__add {
-  background-color: #558DBF;
+  background-color: #4f6bed;
 }
 #btn__del {
   background-color: #D42A32;
@@ -84,7 +84,7 @@ input::-webkit-inner-spin-button {
 }
 
 .added {
-  background: #dedbf5;
+  background-color: #4f6bed31;
 }
 .deleted {
   background: #cf999c;
@@ -97,7 +97,7 @@ input::-webkit-inner-spin-button {
   font-weight: bold;
 }
 .selected {
-  background: #cbd1d6;
+  background: rgba(141,154,187, 0.68);
 }
 
 #loading {
