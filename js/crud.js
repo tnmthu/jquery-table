@@ -1,5 +1,4 @@
 $(document).ready(function() {
-
   let columns = [
     {
       colName: "Id",
@@ -147,27 +146,33 @@ $(document).ready(function() {
     let regex = /[eE+-]/g;
     return regex.test(s);
   }
+  $.fn.validated = function(name, sal, age) {
+    console.log(age);
+    if (name === "" || !$.fn.isName(name)) {
+      $("#emp_name").css("border-color", "red");
+      $("#emp_name_msg").html("Wrong name format.");
+      return false;
+    } else if (sal === "" || !$.fn.isMoney(sal)) {
+      $("#emp_salary").css("border-color", "red");
+      $("#emp_salary_msg").html("Salary must be in money type. Eg. 1000000");
+      return false;
+    } else if (age === "" || $.fn.includeEe(age) || $.fn.isFloat(age) || 20 > age || 65 < age) {
+      $("#emp_age").css("border-color", "red");
+      $("#emp_age_msg").html("Age must be an integer, > 20, < 65.");
+      return false;
+    }
+    return true;
+  }
 
   // BTN_ADD CLICKED
   let cnt = 0;
   $("#btn__add").click(function() {
     let name = $("#emp_name").val().trim();
-    let sal = parseInt($("#emp_salary").val().trim());
-    let age = parseInt($("#emp_age").val().trim());
+    let sal = $("#emp_salary").val().trim();
+    let age = $("#emp_age").val().trim();
 
-    // validating inputs
-    if (name == "" || sal == "" || age == "") {
-      $("#emp_age, #emp_name, #emp_salary").css("border-color", "red");
-      $(".msg").html("Please fill in properly.");
-    } else if ($.fn.includeEe(age) || $.fn.isFloat(age) || 20 > age || 65 < age) {
-      $("#emp_age").css("border-color", "red");
-      $("#emp_age_msg").html("Age must be an integer, > 20, < 65.");
-    } else if (!$.fn.isMoney(sal)) {
-      $("#emp_salary").css("border-color", "red");
-      $("#emp_salary_msg").html("Salary must be in money type. Eg. 1000000");
-    } else if (!$.fn.isName(name)) {
-      $("#emp_name").css("border-color", "red");
-      $("#emp_name_msg").html("Wrong name format.");
+    if (!$.fn.validated(name, sal, age)) {
+      return;
     } else {
       $("#emp_name, #emp_age, #emp_salary").css("border-color", "#979797");
       $("#emp_name_msg, #emp_age_msg, #emp_salary").html("");
@@ -179,8 +184,8 @@ $(document).ready(function() {
           </td>
           <td class="id"></td>
           <td class="employee_name">${name}</td>
-          <td class="employee_age">${age}</td>
-          <td class="employee_salary">${sal.toLocaleString("en")}</td>
+          <td class="employee_age">${parseInt(age)}</td>
+          <td class="employee_salary">${parseInt(sal).toLocaleString("en")}</td>
         </tr>
       `);
       cnt++;
@@ -229,7 +234,6 @@ $(document).ready(function() {
       $("#emp_salary").val(emp_sal.replace(/,/g, "") || null); // remove money format
     } 
     else {
-      $("#emp_id, #emp_name, #emp_age, #emp_salary").prop("disabled", false);
       $("#emp_id, #emp_name, #emp_age, #emp_salary").val("");
     }
   });
@@ -244,16 +248,8 @@ $(document).ready(function() {
       let age = $("#emp_age").val().trim();
       let sal = $("#emp_salary").val().trim();
 
-      // validating inputs
-      if ($.fn.isFloat(parseInt(age)) || 20 > parseInt(age) || 65 < parseInt(age)) {
-        $("#emp_age").css("border-color", "red");
-        $("#emp_age_msg").html("Age must be an integer, > 20, < 65.");
-      } else if (!$.fn.isMoney(parseInt(sal))) {
-        $("#emp_salary").css("border-color", "red");
-        $("#emp_salary_msg").html("Salary must be in money type. Eg. 1000000");
-      } else if (!$.fn.isName(name)) {
-        $("#emp_name").css("border-color", "red");
-        $("#emp_name_msg").html("Wrong name format.");
+      if (!$.fn.validated(name, sal, age)) {
+        return;
       } else {
         $("#emp_name, #emp_age, #emp_salary").css("border-color", "#979797");
         $(".msg").html("");
@@ -280,11 +276,6 @@ $(document).ready(function() {
       $('tbody input:checkbox').closest("tr").not(clicked).removeClass("selected");
     }
   });
-
-  // CHECK ROW
-  // $('#test').on("click", "tbody tr", function(event) {
-  //   $(this).find("input:checkbox").trigger('click');
-  // });
 
   $('#test').on("click", "tbody input[type='checkbox']", function (e) {
     e.stopPropagation();
